@@ -8,6 +8,18 @@
   </div>
 </template>
 
+<script lang="ts">
+import { defineComponent, onMounted } from "@vue/composition-api";
+import { loadYoutubeApi } from "./Hooks/useYoutube";
+export default defineComponent({
+  setup() {
+    onMounted(() => {
+      loadYoutubeApi();
+    });
+  },
+});
+</script>
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

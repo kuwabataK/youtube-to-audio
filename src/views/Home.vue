@@ -12,14 +12,19 @@
 
     <v-main>
       <!-- メインの中身  -->
+      <YoutubePlayer />
     </v-main>
   </v-app>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, ref } from "@vue/composition-api";
+import { defineComponent, reactive } from "@vue/composition-api";
+import YoutubePlayer from "@/components/YoutubePlayer.vue";
 
 export default defineComponent({
   name: "Home",
+  components: {
+    YoutubePlayer,
+  },
   setup() {
     const state = reactive({
       drawer: false,
@@ -31,6 +36,6 @@ export default defineComponent({
       state,
       changeDrawer,
     };
-  }
+  },
 });
 </script>
