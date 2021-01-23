@@ -1,18 +1,36 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+  <v-app>
+    <v-navigation-drawer v-model="state.drawer" app>
+      <!-- サイドバーの中身  -->
+    </v-navigation-drawer>
+
+    <v-app-bar app>
+      <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Application</v-toolbar-title>
+    </v-app-bar>
+
+    <v-main>
+      <!-- メインの中身  -->
+    </v-main>
+  </v-app>
 </template>
-
 <script lang="ts">
-import Vue from "vue";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import { defineComponent, reactive, ref } from "@vue/composition-api";
 
-export default Vue.extend({
+export default defineComponent({
   name: "Home",
-  components: {
-    HelloWorld
+  setup() {
+    const state = reactive({
+      drawer: false,
+    });
+    const changeDrawer = () => {
+      state.drawer = !state.drawer;
+    };
+    return {
+      state,
+      changeDrawer,
+    };
   }
 });
 </script>
