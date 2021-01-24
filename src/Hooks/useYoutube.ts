@@ -1,9 +1,12 @@
 import { sleep } from "@/Util";
-import { onUnmounted, reactive, watch } from "@vue/composition-api";
-import { stat } from "fs";
+import { reactive, watch } from "@vue/composition-api";
 
 export type Player = {
   getCurrentTime: () => number;
+  /**
+   * 1のとき再生中
+   * 2で一時停止
+   */
   getPlayerState: () => number;
   mute: () => void;
   unMute: () => void;
@@ -161,9 +164,9 @@ export default function useYoutube(id: string) {
   };
 
   const destroy = () => {
-    state.player?.destroy()
-    removeTimeListener()
-  }
+    state.player?.destroy();
+    removeTimeListener();
+  };
 
   //   onMounted(() => {
   //     if (isPreparedYoutube()) return;
@@ -196,6 +199,12 @@ export default function useYoutube(id: string) {
     /**
      * プレイヤー削除時に実行するメソッド
      */
-    destroy
+    destroy,
+    /**
+     * 動画の現在時刻を返す
+     */
+    get currentTime() {
+      return state.currentTime;
+    },
   };
 }

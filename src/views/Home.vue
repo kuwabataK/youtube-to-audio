@@ -1,26 +1,31 @@
 <template>
   <!-- メインの中身  -->
-  <YoutubePlayer />
+  <div>
+    <link-label
+      v-for="data in dataSet"
+      :key="data.id"
+      :videoId="data.videoId"
+      :color="data.color"
+      :start="data.start"
+      :end="data.end"
+      :title="data.title"
+    />
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, reactive } from "@vue/composition-api";
-import YoutubePlayer from "@/components/YoutubePlayer.vue";
+import LinkLabel from "@/components/LinkLabel.vue";
+import StoreUtil from "@/store/StoreUtil";
 
 export default defineComponent({
   name: "Home",
   components: {
-    YoutubePlayer,
+    LinkLabel,
   },
   setup() {
-    const state = reactive({
-      drawer: false,
-    });
-    const changeDrawer = () => {
-      state.drawer = !state.drawer;
-    };
+    const { dataSet } = StoreUtil.useStore("DataStore");
     return {
-      state,
-      changeDrawer,
+      dataSet,
     };
   },
 });

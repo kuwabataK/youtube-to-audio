@@ -11,8 +11,13 @@
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
-              <v-list-item-content @click="() => router.push('/About')">
+              <v-list-item-content @click="() => router.push('/create')">
                 <v-list-item-title>Create Voice Button</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-content @click="() => router.push('/about')">
+                <v-list-item-title>About</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -41,8 +46,10 @@ import router from "@/router/index";
 export default defineComponent({
   setup() {
     const yt = StoreUtil.useStore("YoutubeStore");
+    const { loadData } = StoreUtil.useStore("DataStore");
     onMounted(() => {
       loadYoutubeApi();
+      loadData();
     });
     const state = reactive({
       drawer: false,

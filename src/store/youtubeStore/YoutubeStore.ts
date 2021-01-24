@@ -3,7 +3,7 @@ import useYoutube from "@/Hooks/useYoutube";
 import { StoreBase, ValueType } from "../StoreBase";
 
 /* eslint-disable class-methods-use-this */
-class YootubeStore implements StoreBase {
+class YoutubeStore implements StoreBase {
   createStore() {
     const ids = useId(["youtube"]);
     const yt = useYoutube(ids.youtube);
@@ -16,9 +16,9 @@ class YootubeStore implements StoreBase {
   }
 }
 
-const value: ValueType<YootubeStore> = {};
+const value: ValueType<YoutubeStore> = {};
 
 export default {
-  createStore: new YootubeStore().createStore,
+  createStore: new YoutubeStore().createStore,
   value,
 };
