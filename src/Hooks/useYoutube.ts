@@ -160,9 +160,10 @@ export default function useYoutube(id: string) {
     });
   };
 
-  onUnmounted(() => {
-    removeTimeListener();
-  });
+  const destroy = () => {
+    state.player?.destroy()
+    removeTimeListener()
+  }
 
   //   onMounted(() => {
   //     if (isPreparedYoutube()) return;
@@ -192,5 +193,9 @@ export default function useYoutube(id: string) {
     set isLoop(val: boolean) {
       state.isLoop = val;
     },
+    /**
+     * プレイヤー削除時に実行するメソッド
+     */
+    destroy
   };
 }

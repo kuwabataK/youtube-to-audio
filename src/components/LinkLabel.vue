@@ -1,23 +1,19 @@
 <template>
-  <div>
-    <div v-show="false" :id="ids.youtube" />
-    <v-chip color="primary" outlined pill @click="loadVideo">
-      {{ props.title }}
-      <a :href="urlWithTime" target="_blank" rel="noopener">
-        <v-icon right>
-          mdi-open-in-new
-        </v-icon>
-      </a>
-    </v-chip>
-  </div>
+  <v-chip color="primary" outlined pill @click="loadVideo">
+    {{ props.title }}
+    <a :href="urlWithTime" target="_blank" rel="noopener">
+      <v-icon right>
+        mdi-open-in-new
+      </v-icon>
+    </a>
+  </v-chip>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from "@vue/composition-api";
-import useId from "@/Hooks/useId";
-import useYoutube from "@/Hooks/useYoutube";
+import StoreUtil from "@/store/StoreUtil";
 
 export default defineComponent({
-  name: "Home",
+  name: "LinkLabel",
   props: {
     url: {
       type: String,
@@ -32,8 +28,7 @@ export default defineComponent({
   },
   setup(props) {
     const { start, end } = props;
-    const ids = useId(["youtube"]);
-    const yt = useYoutube(ids.youtube);
+    const { yt } = StoreUtil.useStore("YoutubeStore");
     yt.isLoop = true;
 
     const videoId = computed(() => {
@@ -55,11 +50,12 @@ export default defineComponent({
       }
     };
     const urlWithTime = computed(() => {
-      return `https://www.youtube.com/watch?v=${videoId.value}&t=${Math.round(start || 0)}`;
+      return `https://www.youtube.com/watch?v=${videoId.value}&t=${Math.round(
+        start || 0
+      )}`;
     });
     return {
       props,
-      ids,
       yt,
       playVideo,
       loadVideo,

@@ -1,6 +1,5 @@
 <template>
   <div class="youtube">
-    <div v-show="false" :id="ids.youtube" />
     <button @click="loadVideo('xhQc8VsXkWY', 49 * 60 + 31.9, 49 * 60 + 33.1)">
       おかゆボタン
     </button>
@@ -22,23 +21,21 @@
       :start="130"
       :end="140"
     />
-    <button @click="() => yt.player.pauseVideo()">
+    <button @click="pause">
       停止
     </button>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from "@vue/composition-api";
-import useId from "@/Hooks/useId";
-import useYoutube from "@/Hooks/useYoutube";
 import LinkLabel from "./LinkLabel.vue";
+import StoreUtil from "@/store/StoreUtil";
 
 export default defineComponent({
   components: { LinkLabel },
   name: "Home",
   setup() {
-    const ids = useId(["youtube"]);
-    const yt = useYoutube(ids.youtube);
+    const { yt } = StoreUtil.useStore("YoutubeStore");
     yt.isLoop = true;
 
     const loadVideo = async (videoId: string, start: number, end: number) => {
@@ -58,12 +55,15 @@ export default defineComponent({
     const generateURL = (id: string) => {
       return `https://www.youtube.com/watch?v=${id}`;
     };
+    const pause = () => {
+      yt.player?.pauseVideo();
+    };
     return {
-      ids,
       yt,
       playVideo,
       loadVideo,
       generateURL,
+      pause,
     };
   },
 });

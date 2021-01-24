@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
+      <div v-show="false" :id="yt.id" />
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
@@ -11,11 +12,16 @@
 <script lang="ts">
 import { defineComponent, onMounted } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
+import StoreUtil from "./store/StoreUtil";
 export default defineComponent({
   setup() {
+    const yt = StoreUtil.useStore('YoutubeStore')
     onMounted(() => {
       loadYoutubeApi();
     });
+    return {
+      yt,
+    }
   },
 });
 </script>
