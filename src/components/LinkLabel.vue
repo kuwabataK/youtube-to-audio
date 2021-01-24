@@ -1,11 +1,9 @@
 <template>
-  <v-chip color="primary" outlined pill @click="loadVideo">
+  <v-chip class="ma-2" :color="props.color" outlined @click="loadVideo">
     {{ props.title }}
-    <a :href="urlWithTime" target="_blank" rel="noopener">
-      <v-icon right>
-        mdi-open-in-new
-      </v-icon>
-    </a>
+    <v-icon color="blue" right @click.stop="openLink">
+      mdi-open-in-new
+    </v-icon>
   </v-chip>
 </template>
 <script lang="ts">
@@ -25,11 +23,15 @@ export default defineComponent({
     },
     start: Number,
     end: Number,
+    color: {
+      type: String,
+      default: "primary",
+    },
   },
   setup(props) {
     const { start, end } = props;
     const { yt } = StoreUtil.useStore("YoutubeStore");
-    yt.isLoop = true;
+    yt.isLoop = false;
 
     const videoId = computed(() => {
       return new URL(props.url).searchParams.get("v") as string;
@@ -50,16 +52,17 @@ export default defineComponent({
       }
     };
     const urlWithTime = computed(() => {
-      return `https://www.youtube.com/watch?v=${videoId.value}&t=${Math.round(
-        start || 0
-      )}`;
+      return `https://www.youtube.com/watch?v=${videoId.value}&t=${Math.floor(start || 1) - 1}`;
     });
+    const openLink = () => {
+      window.open(urlWithTime.value);
+    };
     return {
       props,
       yt,
       playVideo,
       loadVideo,
-      urlWithTime,
+      openLink,
     };
   },
 });

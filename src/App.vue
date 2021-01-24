@@ -2,26 +2,60 @@
   <div id="app">
     <div id="nav">
       <div v-show="false" :id="yt.id" />
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <v-app>
+        <v-navigation-drawer v-model="state.drawer" app>
+          <v-list>
+            <v-list-item link>
+              <v-list-item-content @click="() => router.push('/')">
+                <v-list-item-title>Home</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-content @click="() => router.push('/About')">
+                <v-list-item-title>Create Voice Button</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
+
+        <v-app-bar app>
+          <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
+
+          <v-toolbar-title>Holo Botton</v-toolbar-title>
+        </v-app-bar>
+
+        <v-main>
+          <router-view />
+        </v-main>
+      </v-app>
     </div>
-    <router-view />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "@vue/composition-api";
+import { defineComponent, onMounted, reactive } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
+import router from "@/router/index";
+
 export default defineComponent({
   setup() {
-    const yt = StoreUtil.useStore('YoutubeStore')
+    const yt = StoreUtil.useStore("YoutubeStore");
     onMounted(() => {
       loadYoutubeApi();
     });
+    const state = reactive({
+      drawer: false,
+    });
+    const changeDrawer = () => {
+      state.drawer = !state.drawer;
+    };
     return {
       yt,
-    }
+      state,
+      changeDrawer,
+      router,
+    };
   },
 });
 </script>

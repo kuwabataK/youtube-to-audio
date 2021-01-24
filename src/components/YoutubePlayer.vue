@@ -12,14 +12,11 @@
     <button @click="loadVideo('76ykVW5fiK8', 38 * 60 + 34.5, 38 * 60 + 35.5)">
       あれ?どこ?
     </button>
-    <button @click="loadVideo('76ykVW5fiK8', 38 * 60 + 19.6, 38 * 60 + 37)">
-      全部あくあ
-    </button>
     <link-label
-      title="テスト"
+      title="のんどこ / たべとこ / あれ？どこ？"
       url="https://www.youtube.com/watch?v=76ykVW5fiK8"
-      :start="130"
-      :end="140"
+      :start="38 * 60 + 19.6"
+      :end="38 * 60 + 37"
     />
     <button @click="pause">
       停止
@@ -36,7 +33,7 @@ export default defineComponent({
   name: "Home",
   setup() {
     const { yt } = StoreUtil.useStore("YoutubeStore");
-    yt.isLoop = true;
+    yt.isLoop = false;
 
     const loadVideo = async (videoId: string, start: number, end: number) => {
       const player = await yt.loadVideo(videoId, {
