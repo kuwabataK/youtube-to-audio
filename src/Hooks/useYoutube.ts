@@ -80,7 +80,9 @@ export default function useYoutube(id: string) {
     /**
      * ループ再生するかどうか
      */
-    isLoop: false
+    isLoop: false,
+    width: 320,
+    height: 180,
   });
 
   /**
@@ -113,16 +115,13 @@ export default function useYoutube(id: string) {
     () => state.currentTime,
     () => {
       // endTimeを超えたときの処理
-      if (
-        state.endTime != null &&
-        state.currentTime != null &&
-        state.currentTime > state.endTime
-      ) {
+      if (state.endTime != null && state.currentTime != null && state.currentTime > state.endTime) {
         if (state.isLoop) {
           state.player?.seekTo(state.startTime || 0, true);
           state.player?.playVideo();
         } else {
           state.player?.pauseVideo();
+          state.player?.seekTo(state.endTime || 0, true);
         }
       }
     }
@@ -132,10 +131,7 @@ export default function useYoutube(id: string) {
    * ビデオをロードする
    * @param videoId ロードするVideoId
    */
-  const loadVideo = async (
-    videoId: string,
-    options: LoadVideoOptions = {}
-  ): Promise<Player> => {
+  const loadVideo = async (videoId: string, options: LoadVideoOptions = {}): Promise<Player> => {
     if (!isPreparedYoutube()) {
       await sleep(300);
       return loadVideo(videoId);
@@ -143,15 +139,17 @@ export default function useYoutube(id: string) {
     if (state.player) {
       state.player.destroy();
     }
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // the Player object is created uniquely based on the id in props
 
       state.player = new (window as any).YT.Player(id, {
+        width: state.width,
+        height: state.height,
         ...options,
         playerVars: {
           ...(options.playerVars || {}),
           start: undefined,
-          end: undefined
+          end: undefined,
         },
         videoId,
         events: {
@@ -164,8 +162,8 @@ export default function useYoutube(id: string) {
             state.startTime = options.playerVars?.start;
             state.endTime = options.playerVars?.end;
             resolve(state.player as Player);
-          }
-        }
+          },
+        },
       });
     });
   };
@@ -212,6 +210,6 @@ export default function useYoutube(id: string) {
      */
     get currentTime() {
       return state.currentTime;
-    }
+    },
   };
 }

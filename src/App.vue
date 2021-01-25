@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <div id="nav">
-      <div v-show="false" :id="yt.id" />
       <v-app>
         <v-navigation-drawer v-model="state.drawer" app>
           <v-list>
@@ -30,6 +29,9 @@
         </v-app-bar>
 
         <v-main>
+          <div class="main-player" v-show="state.isShowPlayer">
+            <div :id="yt.id" />
+          </div>
           <router-view />
         </v-main>
       </v-app>
@@ -38,21 +40,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from "@vue/composition-api";
+import { defineComponent, onMounted, reactive, computed } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
+import { sleep, canPlayAudio } from "./Util";
+
+const firstVideoSourceId = "mZ0sJQC8qkE";
 
 export default defineComponent({
   setup() {
     const yt = StoreUtil.useStore("YoutubeStore");
     const { loadData } = StoreUtil.useStore("DataStore");
-    onMounted(() => {
+    onMounted(async () => {
       loadYoutubeApi();
       loadData();
+      await sleep(1000);
+      yt.yt.loadVideo(firstVideoSourceId);
     });
     const state = reactive({
-      drawer: false
+      drawer: false,
+      isShowPlayer: !canPlayAudio(),
     });
     const changeDrawer = () => {
       state.drawer = !state.drawer;
@@ -61,9 +69,9 @@ export default defineComponent({
       yt,
       state,
       changeDrawer,
-      router
+      router,
     };
-  }
+  },
 });
 </script>
 
@@ -87,5 +95,19 @@ export default defineComponent({
       color: #42b983;
     }
   }
+}
+.main-player {
+  iframe {
+    width: 100% !important;
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+.player {
+  max-width: 100%;
+  // height: 180px;
+  display: grid;
+  place-items: center;
 }
 </style>

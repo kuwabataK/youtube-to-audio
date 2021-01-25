@@ -23,6 +23,7 @@
         <v-btn
           color="primary"
           class="mt-10"
+          :disabled="isDisableCreateButton"
           @click="
             () => {
               state.editDataId = null;
@@ -41,32 +42,36 @@ import { defineComponent, reactive, computed } from "@vue/composition-api";
 import CreateVoiceModal from "@/components/CreateVoiceModal.vue";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
+import { isMobile } from "@/Util";
 
 export default defineComponent({
   name: "CreateVoicePage",
   components: {
     CreateVoiceModal,
-    LinkLabel
+    LinkLabel,
   },
   setup() {
     const { dataSetOnlyUser } = StoreUtil.useStore("DataStore");
     const state = reactive({
       isOpenCreateModal: false,
-      editDataId: null as string | null
+      editDataId: null as string | null,
     });
     const openEdit = (id: string) => {
       state.editDataId = id;
       state.isOpenCreateModal = true;
     };
     const editedData = computed(() => {
-      return dataSetOnlyUser.value.find(d => d.id === state.editDataId);
+      return dataSetOnlyUser.value.find((d) => d.id === state.editDataId);
     });
     return {
+      get isDisableCreateButton() {
+        return isMobile();
+      },
       state,
       dataSetOnlyUser,
       openEdit,
-      editedData
+      editedData,
     };
-  }
+  },
 });
 </script>

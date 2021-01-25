@@ -1,5 +1,8 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+    <h1>About</h1>
+    このサイトは非公式サイトです。
+    <p />
+    公式
   </div>
 </template>
