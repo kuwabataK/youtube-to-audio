@@ -20,7 +20,7 @@ class DataStore implements StoreBase {
   createStore() {
     const state = reactive({
       dataSet: [] as AudioData[],
-      showOnlyUserData: false,
+      showOnlyUserData: false
     });
     const loadData = () => {
       try {
@@ -59,7 +59,7 @@ class DataStore implements StoreBase {
       state.dataSet.push(newData);
     };
     const editData = (editedData: AudioData) => {
-      const removedDataSet = state.dataSet.filter((d) => d.id !== editedData.id);
+      const removedDataSet = state.dataSet.filter(d => d.id !== editedData.id);
       state.dataSet = [...removedDataSet, editedData];
     };
     return {
@@ -68,7 +68,7 @@ class DataStore implements StoreBase {
       loadData,
       setDataSet,
       addData,
-      editData,
+      editData
     };
   }
 }
@@ -77,5 +77,5 @@ const value: ValueType<DataStore> = {};
 
 export default {
   createStore: new DataStore().createStore,
-  value,
+  value
 };

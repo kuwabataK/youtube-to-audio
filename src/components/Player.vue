@@ -13,7 +13,7 @@ export default defineComponent({
   components: { LinkLabel },
   name: "Player",
   props: {
-    videoId: String,
+    videoId: String
   },
   setup(props, context) {
     const ids = useId(["youtube"]);
@@ -43,9 +43,9 @@ export default defineComponent({
       props,
       ids,
       yt,
-      loadVideo,
+      loadVideo
     };
-  },
+  }
 });
 </script>
 

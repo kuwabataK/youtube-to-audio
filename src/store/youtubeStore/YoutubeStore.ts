@@ -11,7 +11,7 @@ class YoutubeStore implements StoreBase {
       yt,
       get id() {
         return ids.youtube;
-      },
+      }
     };
   }
 }
@@ -20,5 +20,5 @@ const value: ValueType<YoutubeStore> = {};
 
 export default {
   createStore: new YoutubeStore().createStore,
-  value,
+  value
 };

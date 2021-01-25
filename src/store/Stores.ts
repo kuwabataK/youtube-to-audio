@@ -6,7 +6,7 @@ import DataStore from "@/store/DataStore/DataStore";
  */
 export const StoreIndex = {
   YoutubeStore,
-  DataStore,
+  DataStore
 };
 
 export type StoresType = typeof StoreIndex;
@@ -15,6 +15,7 @@ export type StoresType = typeof StoreIndex;
  * StoreIndexからStoreの実体のみを抽出したMapを返す
  */
 const GeneratedStores = () => {
+  // eslint-disable @typescript-eslint/no-explicit-any
   const result: { [key: string]: any } = {};
   Object.entries(StoreIndex).forEach(([key, val]) => {
     result[key] = val.value;

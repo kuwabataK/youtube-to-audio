@@ -37,7 +37,7 @@ export default defineComponent({
 
     const loadVideo = async (videoId: string, start: number, end: number) => {
       const player = await yt.loadVideo(videoId, {
-        playerVars: { start, end },
+        playerVars: { start, end }
       });
       player.unMute();
       player.setPlaybackQuality("small");
@@ -60,9 +60,9 @@ export default defineComponent({
       playVideo,
       loadVideo,
       generateURL,
-      pause,
+      pause
     };
-  },
+  }
 });
 </script>
 

@@ -1,5 +1,5 @@
 export function sleep(msec: number) {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     setTimeout(resolve, msec);
   });
 }
@@ -7,11 +7,13 @@ export function sleep(msec: number) {
 export function parseToSec(str: string) {
   const times = str.split(":");
   if (times.length === 3) {
-    return parseInt(times[0]) * 3600 + parseInt(times[1]) * 60 + parseInt(times[2]);
+    return (
+      parseInt(times[0]) * 3600 + parseInt(times[1]) * 60 + parseFloat(times[2])
+    );
   } else if (times.length === 2) {
-    return parseInt(times[0]) * 60 + parseInt(times[1]);
+    return parseInt(times[0]) * 60 + parseFloat(times[1]);
   }
-  return parseInt(times[1]);
+  return parseFloat(times[0]);
 }
 
 export function parseToSecStr(sec: number) {
@@ -21,7 +23,8 @@ export function parseToSecStr(sec: number) {
   if (sec < 60 * 60) {
     return `${Math.floor(sec / 60)}:${sec % 60}`;
   }
-  return `${Math.floor(sec / 3600)}:${Math.floor((sec % 3600) / 60)}:${sec % 60}`;
+  return `${Math.floor(sec / 3600)}:${Math.floor((sec % 3600) / 60)}:${sec %
+    60}`;
 }
 
 /**
@@ -37,5 +40,7 @@ export function getVideoIdFromUrl(url: string) {
  * @param startTime
  */
 export function getUrlFromId(videoId: string, startTime = 0) {
-  return `https://www.youtube.com/watch?v=${videoId}&t=${Math.floor(startTime || 1) - 1}`;
+  return `https://www.youtube.com/watch?v=${videoId}&t=${Math.floor(
+    startTime || 1
+  ) - 1}`;
 }

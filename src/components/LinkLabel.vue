@@ -19,22 +19,22 @@ export default defineComponent({
   props: {
     videoId: {
       type: String,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     start: Number,
     end: Number,
     color: {
       type: String,
-      default: "primary",
+      default: "primary"
     },
     showEditButton: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   setup(props, context) {
     const { yt } = StoreUtil.useStore("YoutubeStore");
@@ -42,7 +42,7 @@ export default defineComponent({
 
     const loadVideo = async () => {
       const player = await yt.loadVideo(props.videoId, {
-        playerVars: { start: props.start, end: props.end },
+        playerVars: { start: props.start, end: props.end }
       });
       player.unMute();
       player.setPlaybackQuality("small");
@@ -61,9 +61,9 @@ export default defineComponent({
       yt,
       loadVideo,
       openLink,
-      openEdit,
+      openEdit
     };
-  },
+  }
 });
 </script>
 

@@ -30,7 +30,7 @@
             }
           "
         >
-          Create Voice
+          Create Button
         </v-btn>
       </v-col>
     </v-container>
@@ -46,27 +46,27 @@ export default defineComponent({
   name: "CreateVoicePage",
   components: {
     CreateVoiceModal,
-    LinkLabel,
+    LinkLabel
   },
   setup() {
     const { dataSetOnlyUser } = StoreUtil.useStore("DataStore");
     const state = reactive({
       isOpenCreateModal: false,
-      editDataId: null as string | null,
+      editDataId: null as string | null
     });
     const openEdit = (id: string) => {
       state.editDataId = id;
       state.isOpenCreateModal = true;
     };
     const editedData = computed(() => {
-      return dataSetOnlyUser.value.find((d) => d.id === state.editDataId);
+      return dataSetOnlyUser.value.find(d => d.id === state.editDataId);
     });
     return {
       state,
       dataSetOnlyUser,
       openEdit,
-      editedData,
+      editedData
     };
-  },
+  }
 });
 </script>

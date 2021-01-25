@@ -13,20 +13,20 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive } from "@vue/composition-api";
+import { defineComponent } from "@vue/composition-api";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
 
 export default defineComponent({
   name: "Home",
   components: {
-    LinkLabel,
+    LinkLabel
   },
   setup() {
     const { dataSet } = StoreUtil.useStore("DataStore");
     return {
-      dataSet,
+      dataSet
     };
-  },
+  }
 });
 </script>

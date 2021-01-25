@@ -26,7 +26,7 @@
         <v-app-bar app>
           <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
 
-          <v-toolbar-title>Holo Botton</v-toolbar-title>
+          <v-toolbar-title>Holo Button(非公式)</v-toolbar-title>
         </v-app-bar>
 
         <v-main>
@@ -52,7 +52,7 @@ export default defineComponent({
       loadData();
     });
     const state = reactive({
-      drawer: false,
+      drawer: false
     });
     const changeDrawer = () => {
       state.drawer = !state.drawer;
@@ -61,9 +61,9 @@ export default defineComponent({
       yt,
       state,
       changeDrawer,
-      router,
+      router
     };
-  },
+  }
 });
 </script>
 

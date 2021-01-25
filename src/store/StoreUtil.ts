@@ -1,4 +1,4 @@
-import Stores, { StoreIndex } from './Stores'
+import Stores, { StoreIndex } from "./Stores";
 
 export default class StoreUtil {
   /**
@@ -6,11 +6,11 @@ export default class StoreUtil {
    * @param storeName 利用するStoreの名前
    */
   static useStore<T extends keyof typeof StoreIndex>(storeName: T) {
-    const store = Stores()[storeName as keyof ReturnType<typeof Stores>]
+    const store = Stores()[storeName as keyof ReturnType<typeof Stores>];
     if (!store) {
-      throw new Error(`${storeName} is not provided`)
+      throw new Error(`${storeName} is not provided`);
     }
-    return store as NonNullable<Required<ReturnType<typeof Stores>[T]>>
+    return store as NonNullable<Required<ReturnType<typeof Stores>[T]>>;
   }
 
   /**
@@ -21,7 +21,7 @@ export default class StoreUtil {
    */
   static generateStore() {
     Object.entries(StoreIndex).forEach(([key, store]) => {
-      StoreIndex[key as keyof typeof StoreIndex].value = store.createStore()
-    })
+      StoreIndex[key as keyof typeof StoreIndex].value = store.createStore();
+    });
   }
 }

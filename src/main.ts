@@ -11,10 +11,10 @@ Vue.config.productionTip = false;
 Vue.use(VueCompositionAPI);
 
 // ストアを作成する
-StoreUtil.generateStore()
+StoreUtil.generateStore();
 
 new Vue({
   router,
   vuetify,
-  render: (h) => h(App),
+  render: h => h(App)
 }).$mount("#app");
