@@ -23,7 +23,7 @@
           <v-switch
             cols="6"
             v-model="dataStore.state.showOnlyUserData"
-            label="自分のボタンのみ表示"
+            label="自分の作ったボタンのみ表示"
             hide-details
           ></v-switch>
         </v-col>
