@@ -206,14 +206,13 @@ export default defineComponent({
         return;
       }
 
-      const player = await yt.loadVideo(state.videoId, {
-        playerVars: {
-          start: parseToSec(state.startStr),
-          end: parseToSec(state.endStr)
-        }
+      yt.player?.loadVideoById({
+        videoId: state.videoId,
+        startSeconds: parseToSec(state.startStr),
+        endSeconds: parseToSec(state.endStr)
       });
-      player.unMute();
-      player.playVideo();
+      yt.player?.unMute();
+      yt.player?.playVideo();
     };
     const disableTestPlay = computed(() => {
       return !state.videoId || !state.startStr || !state.endStr;

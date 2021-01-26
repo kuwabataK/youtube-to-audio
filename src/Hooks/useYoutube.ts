@@ -1,6 +1,12 @@
 import { sleep } from "@/Util";
 import { reactive, watch } from "@vue/composition-api";
 
+type loadVideoType = {
+  videoId: string;
+  startSeconds: number;
+  endSeconds: number;
+  suggestedQuality?: string;
+};
 export type Player = {
   getCurrentTime: () => number;
   /**
@@ -16,6 +22,7 @@ export type Player = {
   seekTo: (seconds: number, allowSeekAhead: boolean) => void;
   setPlaybackQuality: (suggestedQuality: string) => void;
   destroy: () => void;
+  loadVideoById: (args: loadVideoType) => void;
 };
 
 export type PlayerVars = {

@@ -43,12 +43,14 @@ export default defineComponent({
     yt.isLoop = false;
 
     const loadVideo = async () => {
-      const player = await yt.loadVideo(props.videoId, {
-        playerVars: { start: props.start, end: props.end }
+      yt.player?.loadVideoById({
+        videoId: props.videoId,
+        startSeconds: props.start || 0,
+        endSeconds: props.end || 0
       });
-      player.unMute();
-      player.setPlaybackQuality("small");
-      player.playVideo();
+      yt.player?.unMute();
+      yt.player?.setPlaybackQuality("small");
+      yt.player?.playVideo();
     };
     const urlWithTime = computed(() => {
       return getUrlFromId(props.videoId, props.start);
