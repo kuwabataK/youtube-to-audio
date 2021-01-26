@@ -10,6 +10,7 @@ export type AudioData = {
   start: number;
   end: number;
   videoId: string;
+  isOwnData?: boolean;
 };
 
 /**
@@ -40,8 +41,17 @@ class DataStore implements StoreBase {
       }
     };
     const dataSet = computed(() => {
-      if (state.showOnlyUserData) return state.dataSet;
-      return [...dataJson, ...state.dataSet];
+      if (state.showOnlyUserData)
+        return state.dataSet.map(d => ({ ...d, isOwnData: true }));
+      return [
+        ...dataJson,
+        ...state.dataSet.map(d => {
+          return {
+            ...d,
+            isOwnData: true
+          };
+        })
+      ];
     });
     const dataSetOnlyUser = computed(() => {
       return state.dataSet;
@@ -63,6 +73,7 @@ class DataStore implements StoreBase {
       state.dataSet = [...removedDataSet, editedData];
     };
     return {
+      state,
       dataSet,
       dataSetOnlyUser,
       loadData,

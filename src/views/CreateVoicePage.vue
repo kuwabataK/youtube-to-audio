@@ -6,19 +6,28 @@
       :editDataId="state.editDataId"
     />
     <v-container>
-      <v-col cols="12">
-        <link-label
-          v-for="data in dataSetOnlyUser"
-          :key="data.id"
-          :videoId="data.videoId"
-          :color="data.color"
-          :start="data.start"
-          :end="data.end"
-          :title="data.title"
-          :showEditButton="true"
-          @openEdit="openEdit(data.id)"
-        />
+      <v-col cols="12" v-show="masterStore.state.isShowVideo">
+        <div class="main-player">
+          <div :id="playerDivId" />
+        </div>
       </v-col>
+      <v-row style="justify-content: center;">
+        <v-col cols="6">
+          <v-switch
+            cols="6"
+            v-model="masterStore.state.isShowVideo"
+            hide-details
+            :disabled="!canPlayAudio"
+            label="動画プレイヤーを表示"
+          ></v-switch>
+          <v-switch
+            cols="6"
+            v-model="dataStore.state.showOnlyUserData"
+            label="自分のボタンのみ表示"
+            hide-details
+          ></v-switch>
+        </v-col>
+      </v-row>
       <v-col cols="12">
         <v-btn
           color="primary"
@@ -34,44 +43,89 @@
           Create Button
         </v-btn>
       </v-col>
+      <v-col cols="12">
+        <link-label
+          v-for="data in dataSet"
+          :key="data.id"
+          :videoId="data.videoId"
+          :color="data.color"
+          :start="data.start"
+          :end="data.end"
+          :title="data.title"
+          :showEditButton="data.isOwnData"
+          @openEdit="openEdit(data.id)"
+        />
+      </v-col>
+      <v-col cols="12">
+        ※PC版Chrome以外の環境では動画プレイヤーを非表示にできません。ご了承ください・・・m(_
+        _)m
+      </v-col>
     </v-container>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, computed } from "@vue/composition-api";
+import {
+  defineComponent,
+  reactive,
+  computed,
+  onMounted
+} from "@vue/composition-api";
 import CreateVoiceModal from "@/components/CreateVoiceModal.vue";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
-import { isMobile } from "@/Util";
+import { isMobile, sleep, canPlayAudio } from "@/Util";
+
+const firstVideoSourceId = "mZ0sJQC8qkE";
 
 export default defineComponent({
   name: "CreateVoicePage",
   components: {
     CreateVoiceModal,
-    LinkLabel,
+    LinkLabel
   },
   setup() {
-    const { dataSetOnlyUser } = StoreUtil.useStore("DataStore");
+    const { dataSet } = StoreUtil.useStore("DataStore");
     const state = reactive({
       isOpenCreateModal: false,
-      editDataId: null as string | null,
+      editDataId: null as string | null
     });
     const openEdit = (id: string) => {
       state.editDataId = id;
       state.isOpenCreateModal = true;
     };
     const editedData = computed(() => {
-      return dataSetOnlyUser.value.find((d) => d.id === state.editDataId);
+      return dataSet.value.find(d => d.id === state.editDataId);
+    });
+    const masterStore = StoreUtil.useStore("MasterStore");
+    const dataStore = StoreUtil.useStore("DataStore");
+    const { yt, id: playerDivId } = StoreUtil.useStore("YoutubeStore");
+    onMounted(async () => {
+      // ロード完了から1秒待ってplayerを準備する
+      await sleep(1000);
+      yt.loadVideo(firstVideoSourceId);
     });
     return {
+      canPlayAudio: canPlayAudio(),
+      playerDivId,
+      yt,
+      dataStore,
+      masterStore,
       get isDisableCreateButton() {
         return isMobile();
       },
       state,
-      dataSetOnlyUser,
+      dataSet,
       openEdit,
-      editedData,
+      editedData
     };
-  },
+  }
 });
 </script>
+
+<style lang="scss">
+.main-player {
+  iframe {
+    max-width: 100% !important;
+  }
+}
+</style>

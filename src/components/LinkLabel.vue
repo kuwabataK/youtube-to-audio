@@ -1,6 +1,8 @@
 <template>
   <v-chip class="ma-2" :color="color" outlined @click="loadVideo">
-    {{ title }}
+    <span class="label-title" :class="{ 'show-edit': showEditButton }">{{
+      title
+    }}</span>
     <v-icon color="blue" right @click.stop="openLink">
       mdi-open-in-new
     </v-icon>
@@ -70,5 +72,13 @@ export default defineComponent({
 <style lang="scss" scoped>
 a {
   border-bottom: 0;
+}
+.label-title {
+  max-width: calc(100% - 24px);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  &.show-edit {
+    max-width: calc(100% - 48px);
+  }
 }
 </style>

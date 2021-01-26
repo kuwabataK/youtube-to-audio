@@ -119,7 +119,8 @@ import {
   defineComponent,
   reactive,
   computed,
-  onMounted
+  onMounted,
+  watch
 } from "@vue/composition-api";
 import Player from "./Player.vue";
 import {
@@ -166,6 +167,18 @@ export default defineComponent({
         state.tag = editData.tag.join(",");
         state.color = editData.color || "";
         state.id = editData.id;
+      }
+    });
+    const startTime = computed(() => {
+      return parseToSec(state.startStr);
+    });
+    const endTime = computed(() => {
+      return parseToSec(state.endStr);
+    });
+    watch(startTime, () => {
+      if (startTime.value == null || endTime.value == null) return;
+      if (startTime.value >= endTime.value) {
+        state.endStr = parseToSecStr(startTime.value + 1);
       }
     });
     /**

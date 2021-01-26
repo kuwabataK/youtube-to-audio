@@ -81,8 +81,8 @@ export default function useYoutube(id: string) {
      * ループ再生するかどうか
      */
     isLoop: false,
-    width: 320,
-    height: 180,
+    width: 480,
+    height: 480 * (9 / 16)
   });
 
   /**
@@ -115,7 +115,11 @@ export default function useYoutube(id: string) {
     () => state.currentTime,
     () => {
       // endTimeを超えたときの処理
-      if (state.endTime != null && state.currentTime != null && state.currentTime > state.endTime) {
+      if (
+        state.endTime != null &&
+        state.currentTime != null &&
+        state.currentTime > state.endTime
+      ) {
         if (state.isLoop) {
           state.player?.seekTo(state.startTime || 0, true);
           state.player?.playVideo();
@@ -127,11 +131,25 @@ export default function useYoutube(id: string) {
     }
   );
 
+  watch(
+    () => state.startTime,
+    () => {
+      // startTimeがendTimeを超えないようにしておく
+      if (state.startTime == null || state.endTime == null) return;
+      if (state.startTime >= state.endTime) {
+        state.endTime = state.startTime + 1;
+      }
+    }
+  );
+
   /**
    * ビデオをロードする
    * @param videoId ロードするVideoId
    */
-  const loadVideo = async (videoId: string, options: LoadVideoOptions = {}): Promise<Player> => {
+  const loadVideo = async (
+    videoId: string,
+    options: LoadVideoOptions = {}
+  ): Promise<Player> => {
     if (!isPreparedYoutube()) {
       await sleep(300);
       return loadVideo(videoId);
@@ -139,7 +157,7 @@ export default function useYoutube(id: string) {
     if (state.player) {
       state.player.destroy();
     }
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       // the Player object is created uniquely based on the id in props
 
       state.player = new (window as any).YT.Player(id, {
@@ -149,7 +167,7 @@ export default function useYoutube(id: string) {
         playerVars: {
           ...(options.playerVars || {}),
           start: undefined,
-          end: undefined,
+          end: undefined
         },
         videoId,
         events: {
@@ -162,8 +180,8 @@ export default function useYoutube(id: string) {
             state.startTime = options.playerVars?.start;
             state.endTime = options.playerVars?.end;
             resolve(state.player as Player);
-          },
-        },
+          }
+        }
       });
     });
   };
@@ -211,5 +229,11 @@ export default function useYoutube(id: string) {
     get currentTime() {
       return state.currentTime;
     },
+    get startTime() {
+      return state.startTime;
+    },
+    get endTime() {
+      return state.endTime;
+    }
   };
 }

@@ -8,7 +8,7 @@ import MasterStore from "@/store/MasterStore/MasterStore";
 export const StoreIndex = {
   YoutubeStore,
   DataStore,
-  MasterStore,
+  MasterStore
 };
 
 export type StoresType = typeof StoreIndex;

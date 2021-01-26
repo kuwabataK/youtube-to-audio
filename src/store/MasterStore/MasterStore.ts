@@ -1,5 +1,3 @@
-import useId from "@/Hooks/useId";
-import useYoutube from "@/Hooks/useYoutube";
 import { canPlayAudio } from "@/Util";
 import { reactive } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
@@ -8,10 +6,10 @@ import { StoreBase, ValueType } from "../StoreBase";
 class MasterStore implements StoreBase {
   createStore() {
     const state = reactive({
-      isShowVideo: !canPlayAudio(),
+      isShowVideo: !canPlayAudio()
     });
     return {
-      state,
+      state
     };
   }
 }
@@ -20,5 +18,5 @@ const value: ValueType<MasterStore> = {};
 
 export default {
   createStore: new MasterStore().createStore,
-  value,
+  value
 };
