@@ -45,7 +45,7 @@
       </v-col>
       <v-col cols="12">
         <link-label
-          v-for="data in dataSet"
+          v-for="data in filteredDataSet"
           :key="data.id"
           :videoId="data.videoId"
           :color="data.color"
@@ -84,7 +84,7 @@ export default defineComponent({
     LinkLabel
   },
   setup() {
-    const { dataSet } = StoreUtil.useStore("DataStore");
+    const { dataSet, filteredDataSet } = StoreUtil.useStore("DataStore");
     const state = reactive({
       isOpenCreateModal: false,
       editDataId: null as string | null
@@ -109,6 +109,7 @@ export default defineComponent({
       playerDivId,
       yt,
       dataStore,
+      filteredDataSet,
       masterStore,
       get isDisableCreateButton() {
         return isMobile();

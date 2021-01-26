@@ -19,8 +19,20 @@
 
         <v-app-bar app>
           <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
-
           <v-toolbar-title>V Button(仮)(α版)</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-responsive max-width="260">
+            <v-text-field
+              v-model="dataStore.state.searchText"
+              dense
+              outlined
+              flat
+              hide-details
+              rounded
+              solo-inverted
+              prepend-inner-icon="mdi-magnify"
+            ></v-text-field>
+          </v-responsive>
         </v-app-bar>
 
         <v-main>
@@ -40,6 +52,7 @@ import router from "@/router/index";
 export default defineComponent({
   setup() {
     const { loadData } = StoreUtil.useStore("DataStore");
+    const dataStore = StoreUtil.useStore("DataStore");
     const masterStore = StoreUtil.useStore("MasterStore");
     onMounted(async () => {
       loadYoutubeApi();
@@ -52,6 +65,7 @@ export default defineComponent({
       state.drawer = !state.drawer;
     };
     return {
+      dataStore,
       state,
       changeDrawer,
       router,

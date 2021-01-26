@@ -21,7 +21,11 @@ class DataStore implements StoreBase {
   createStore() {
     const state = reactive({
       dataSet: [] as AudioData[],
-      showOnlyUserData: false
+      showOnlyUserData: false,
+      searchText: ""
+    });
+    const searchTexts = computed(() => {
+      return state.searchText.split(/[\u{20}\u{3000}]/u);
     });
     const loadData = () => {
       try {
@@ -53,6 +57,16 @@ class DataStore implements StoreBase {
         })
       ];
     });
+    const filteredDataSet = computed(() => {
+      return dataSet.value.filter(d => {
+        if (searchTexts.value.length === 0) return true;
+        return searchTexts.value.every(t => {
+          if (d.title.indexOf(t) !== -1) return true;
+          if (d.tag.some(tag => tag.indexOf(t) !== -1)) return true;
+          return false;
+        });
+      });
+    });
     const dataSetOnlyUser = computed(() => {
       return state.dataSet;
     });
@@ -75,6 +89,7 @@ class DataStore implements StoreBase {
     return {
       state,
       dataSet,
+      filteredDataSet,
       dataSetOnlyUser,
       loadData,
       setDataSet,
