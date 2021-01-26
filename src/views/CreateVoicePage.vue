@@ -17,7 +17,6 @@
             cols="6"
             v-model="masterStore.state.isShowVideo"
             hide-details
-            :disabled="!canPlayAudio"
             label="動画プレイヤーを表示"
           ></v-switch>
           <v-switch
@@ -40,7 +39,7 @@
             }
           "
         >
-          Create Button
+          ボタンをつくる
         </v-btn>
       </v-col>
       <v-col cols="12">
@@ -60,7 +59,7 @@
         ※PC版Chrome以外の環境では動画プレイヤーを非表示にできません。ご了承ください・・・m(_
         _)m
         <p />
-        ※ボタンの追加はPC版でのみ利用できます
+        ※ボタンの追加はPC版Chromeでのみ利用できます
         <p />
         ※youtubeの動画を再生しているので、広告が再生される場合があります
         <p />
@@ -80,7 +79,7 @@ import {
 import CreateVoiceModal from "@/components/CreateVoiceModal.vue";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
-import { isMobile, sleep, canPlayAudio } from "@/Util";
+import { sleep, canPlayAudio } from "@/Util";
 
 const firstVideoSourceId = "mZ0sJQC8qkE";
 
@@ -119,7 +118,7 @@ export default defineComponent({
       filteredDataSet,
       masterStore,
       get isDisableCreateButton() {
-        return isMobile();
+        return !canPlayAudio();
       },
       state,
       dataSet,

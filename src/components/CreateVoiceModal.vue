@@ -28,7 +28,7 @@
                 "
               />
             </v-col>
-            <v-col cols="3">
+            <v-col cols="2">
               <v-text-field
                 v-model="state.startStr"
                 type="text"
@@ -37,12 +37,12 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col cols="2" class="mt-4">
+            <v-col cols="3" class="mt-4">
               <v-btn small color="primary" @click="setTimeToStart"
-                >現在時刻をセット</v-btn
+                >今の動画時間をセット</v-btn
               >
             </v-col>
-            <v-col cols="3">
+            <v-col cols="2">
               <v-text-field
                 type="text"
                 v-model="state.endStr"
@@ -51,9 +51,9 @@
                 required
               ></v-text-field>
             </v-col>
-            <v-col cols="2" class="mt-4">
+            <v-col cols="3" class="mt-4">
               <v-btn small color="primary" @click="setTimeToEnd"
-                >現在時刻をセット</v-btn
+                >今の動画時間をセット</v-btn
               >
             </v-col>
             <v-col cols="2" class="mt-4">
