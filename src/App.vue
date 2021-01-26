@@ -15,6 +15,11 @@
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
+              <v-list-item-content @click="() => router.push('/setting')">
+                <v-list-item-title>Setting</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
               <v-list-item-content @click="() => router.push('/about')">
                 <v-list-item-title>About</v-list-item-title>
               </v-list-item-content>
@@ -29,7 +34,7 @@
         </v-app-bar>
 
         <v-main>
-          <div class="main-player" v-show="state.isShowPlayer">
+          <div class="main-player" v-show="masterStore.state.isShowVideo">
             <div :id="yt.id" />
           </div>
           <router-view />
@@ -40,11 +45,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, computed } from "@vue/composition-api";
+import { defineComponent, onMounted, reactive } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
-import { sleep, canPlayAudio } from "./Util";
+import { sleep } from "./Util";
 
 const firstVideoSourceId = "mZ0sJQC8qkE";
 
@@ -52,6 +57,7 @@ export default defineComponent({
   setup() {
     const yt = StoreUtil.useStore("YoutubeStore");
     const { loadData } = StoreUtil.useStore("DataStore");
+    const masterStore = StoreUtil.useStore("MasterStore");
     onMounted(async () => {
       loadYoutubeApi();
       loadData();
@@ -60,7 +66,6 @@ export default defineComponent({
     });
     const state = reactive({
       drawer: false,
-      isShowPlayer: !canPlayAudio(),
     });
     const changeDrawer = () => {
       state.drawer = !state.drawer;
@@ -70,6 +75,7 @@ export default defineComponent({
       state,
       changeDrawer,
       router,
+      masterStore,
     };
   },
 });

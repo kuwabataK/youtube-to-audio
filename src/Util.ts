@@ -69,7 +69,7 @@ export function canPlayAudio() {
     return true;
   }
   if (userAgent.indexOf("safari") !== -1) {
-    return true;
+    return false;
   }
   return false;
 }
