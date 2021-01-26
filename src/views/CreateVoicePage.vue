@@ -56,26 +56,20 @@
         />
       </v-col>
       <v-col cols="12">
-        ※PC版Chrome以外の環境では動画プレイヤーを非表示にできません。ご了承ください・・・m(_
-        _)m
-        <p />
         ※ボタンの追加はPC版Chromeでのみ利用できます
         <p />
         ※youtubeの動画を再生しているので、広告が再生される場合があります
         <p />
-        *生放送終了直後の動画をボタンにするとうまく再生できない場合があります
+        ※生放送終了直後の動画をボタンにするとうまく再生できない場合があります
+        <p />
+        m(_ _)m
       </v-col>
       <v-col cols="12"> </v-col>
     </v-container>
   </div>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  computed,
-  onMounted
-} from "@vue/composition-api";
+import { defineComponent, reactive, computed, onMounted } from "@vue/composition-api";
 import CreateVoiceModal from "@/components/CreateVoiceModal.vue";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
@@ -87,20 +81,20 @@ export default defineComponent({
   name: "CreateVoicePage",
   components: {
     CreateVoiceModal,
-    LinkLabel
+    LinkLabel,
   },
   setup() {
     const { dataSet, filteredDataSet } = StoreUtil.useStore("DataStore");
     const state = reactive({
       isOpenCreateModal: false,
-      editDataId: null as string | null
+      editDataId: null as string | null,
     });
     const openEdit = (id: string) => {
       state.editDataId = id;
       state.isOpenCreateModal = true;
     };
     const editedData = computed(() => {
-      return dataSet.value.find(d => d.id === state.editDataId);
+      return dataSet.value.find((d) => d.id === state.editDataId);
     });
     const masterStore = StoreUtil.useStore("MasterStore");
     const dataStore = StoreUtil.useStore("DataStore");
@@ -123,9 +117,9 @@ export default defineComponent({
       state,
       dataSet,
       openEdit,
-      editedData
+      editedData,
     };
-  }
+  },
 });
 </script>
 
