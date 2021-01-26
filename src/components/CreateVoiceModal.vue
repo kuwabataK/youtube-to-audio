@@ -2,7 +2,7 @@
   <v-dialog value="true" persistent min-width="800px" max-width="1000px">
     <v-card>
       <v-card-title>
-        <span class="headline">Create Button</span>
+        <span class="headline">ボタンを作成(自分以外には公開されません)</span>
       </v-card-title>
       <v-card-text>
         <v-container>
