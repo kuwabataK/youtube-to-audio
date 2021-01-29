@@ -1,7 +1,8 @@
 import { computed, reactive, watch } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
-import dataJson from "@/assets/data/data.json";
 import { fireBaseUtil } from "@/main";
+
+const dummyUserId = "dummy";
 
 export type AudioData = {
   id: string;
@@ -12,6 +13,9 @@ export type AudioData = {
   end: number;
   videoId: string;
   isOwnData?: boolean;
+  isLocalData?: boolean;
+  access: "private" | "public";
+  createBy: string;
 };
 
 /**
@@ -28,29 +32,53 @@ class DataStore implements StoreBase {
     const searchTexts = computed(() => {
       return state.searchText.split(/[\u{20}\u{3000}]/u);
     });
-    const loadData = async () => {
-      const dataRef = fireBaseUtil.database.ref("/dataSet");
-      const data = await dataRef.once("value");
-      state.dataSet = Object.values(data.val());
-    };
-    const saveData = () => {
+    const loadLocalData = () => {
       try {
-        localStorage.setItem("_DATA_SET_", JSON.stringify(state.dataSet));
+        const dataSet = localStorage.getItem("_DATA_SET_");
+        if (dataSet) {
+          state.dataSet = [
+            ...state.dataSet,
+            ...JSON.parse(dataSet).map((d: AudioData) => {
+              return {
+                ...d,
+                isLocalData: true,
+                isOwnData: true,
+              };
+            }),
+          ];
+        }
       } catch (_) {
-        console.error("Saveに失敗しました");
+        console.error("ロードに失敗しました");
       }
     };
+    /**
+     * localStorageとfirebaseからデータを取得する
+     */
+    const loadData = async () => {
+      loadLocalData();
+      const dataRef = fireBaseUtil.database.ref("/dataSet");
+      const data = await dataRef.once("value");
+      const privateDataRef = fireBaseUtil.database.ref(`privateDataSet/${dummyUserId}/`);
+      const privateData = await privateDataRef.once("value");
+      const dataList = [
+        ...(Object.values(data.val()) as AudioData[]),
+        ...(Object.values(privateData.val()) as AudioData[]),
+      ].map((d) => {
+        return {
+          ...d,
+          get isOwnData() {
+            return d.createBy === dummyUserId; // TODO: Userの判定をちゃんと行う
+          },
+        };
+      });
+      state.dataSet = [...state.dataSet, ...dataList];
+    };
+    const dataSetOnlyUser = computed(() => {
+      return state.dataSet.filter((d) => d.isOwnData);
+    });
     const dataSet = computed(() => {
-      if (state.showOnlyUserData) return state.dataSet.map((d) => ({ ...d, isOwnData: true }));
-      return [
-        ...dataJson,
-        ...state.dataSet.map((d) => {
-          return {
-            ...d,
-            isOwnData: true,
-          };
-        }),
-      ];
+      if (state.showOnlyUserData) return dataSetOnlyUser.value;
+      return state.dataSet;
     });
     const filteredDataSet = computed(() => {
       return dataSet.value.filter((d) => {
@@ -62,24 +90,38 @@ class DataStore implements StoreBase {
         });
       });
     });
-    const dataSetOnlyUser = computed(() => {
-      return state.dataSet;
-    });
-    watch(
-      () => state.dataSet,
-      () => {
-        saveData();
-      }
-    );
-    const setDataSet = (newDataSet: AudioData[]) => {
-      state.dataSet = newDataSet;
+    /**
+     * firebaseのデータを変更する
+     * @param data
+     */
+    const changeFireBaseData = (data: AudioData) => {
+      const postData = { ...data };
+      delete postData.isOwnData;
+      postData.isLocalData = false;
+
+      // publicとprivateで同じデータが存在しないようにするための制御を行う
+      const updates: Record<string, AudioData | null> = {};
+      updates[`privateDataSet/${dummyUserId}/` + data.id] =
+        data.access === "private" ? postData : null;
+      updates["dataSet/" + data.id] = data.access === "private" ? null : postData;
+      return fireBaseUtil.database.ref().update(updates);
     };
+    /**
+     * 新しいデータを追加する
+     * @param newData
+     */
     const addData = (newData: AudioData) => {
       state.dataSet.push(newData);
+      return changeFireBaseData(newData);
     };
+    /**
+     * 既存のデータを置き換える
+     * @param editedData
+     */
     const editData = (editedData: AudioData) => {
       const removedDataSet = state.dataSet.filter((d) => d.id !== editedData.id);
       state.dataSet = [...removedDataSet, editedData];
+      return changeFireBaseData(editedData);
     };
     return {
       state,
@@ -87,7 +129,6 @@ class DataStore implements StoreBase {
       filteredDataSet,
       dataSetOnlyUser,
       loadData,
-      setDataSet,
       addData,
       editData,
     };

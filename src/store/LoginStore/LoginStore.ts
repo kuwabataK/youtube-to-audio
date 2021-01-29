@@ -1,6 +1,5 @@
 import { computed, reactive, watch } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
-import dataJson from "@/assets/data/data.json";
 import firebase from "firebase";
 import { fireBaseUtil } from "@/main";
 
