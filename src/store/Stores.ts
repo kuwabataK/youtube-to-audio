@@ -1,6 +1,7 @@
 import YoutubeStore from "@/store/youtubeStore/YoutubeStore";
 import DataStore from "@/store/DataStore/DataStore";
 import MasterStore from "@/store/MasterStore/MasterStore";
+import LoginStore from "@/store/LoginStore/LoginStore";
 
 /**
  * このプロジェクトで利用するStoreのMapリスト
@@ -8,7 +9,8 @@ import MasterStore from "@/store/MasterStore/MasterStore";
 export const StoreIndex = {
   YoutubeStore,
   DataStore,
-  MasterStore
+  MasterStore,
+  LoginStore,
 };
 
 export type StoresType = typeof StoreIndex;

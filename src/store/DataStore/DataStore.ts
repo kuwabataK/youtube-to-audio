@@ -1,6 +1,7 @@
 import { computed, reactive, watch } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
 import dataJson from "@/assets/data/data.json";
+import { fireBaseUtil } from "@/main";
 
 export type AudioData = {
   id: string;
@@ -22,20 +23,15 @@ class DataStore implements StoreBase {
     const state = reactive({
       dataSet: [] as AudioData[],
       showOnlyUserData: false,
-      searchText: ""
+      searchText: "",
     });
     const searchTexts = computed(() => {
       return state.searchText.split(/[\u{20}\u{3000}]/u);
     });
-    const loadData = () => {
-      try {
-        const dataSet = localStorage.getItem("_DATA_SET_");
-        if (dataSet) {
-          state.dataSet = JSON.parse(dataSet);
-        }
-      } catch (_) {
-        console.error("ロードに失敗しました");
-      }
+    const loadData = async () => {
+      const dataRef = fireBaseUtil.database.ref("/dataSet");
+      const data = await dataRef.once("value");
+      state.dataSet = Object.values(data.val());
     };
     const saveData = () => {
       try {
@@ -45,24 +41,23 @@ class DataStore implements StoreBase {
       }
     };
     const dataSet = computed(() => {
-      if (state.showOnlyUserData)
-        return state.dataSet.map(d => ({ ...d, isOwnData: true }));
+      if (state.showOnlyUserData) return state.dataSet.map((d) => ({ ...d, isOwnData: true }));
       return [
         ...dataJson,
-        ...state.dataSet.map(d => {
+        ...state.dataSet.map((d) => {
           return {
             ...d,
-            isOwnData: true
+            isOwnData: true,
           };
-        })
+        }),
       ];
     });
     const filteredDataSet = computed(() => {
-      return dataSet.value.filter(d => {
+      return dataSet.value.filter((d) => {
         if (searchTexts.value.length === 0) return true;
-        return searchTexts.value.every(t => {
+        return searchTexts.value.every((t) => {
           if (d.title.indexOf(t) !== -1) return true;
-          if (d.tag.some(tag => tag.indexOf(t) !== -1)) return true;
+          if (d.tag.some((tag) => tag.indexOf(t) !== -1)) return true;
           return false;
         });
       });
@@ -83,7 +78,7 @@ class DataStore implements StoreBase {
       state.dataSet.push(newData);
     };
     const editData = (editedData: AudioData) => {
-      const removedDataSet = state.dataSet.filter(d => d.id !== editedData.id);
+      const removedDataSet = state.dataSet.filter((d) => d.id !== editedData.id);
       state.dataSet = [...removedDataSet, editedData];
     };
     return {
@@ -94,7 +89,7 @@ class DataStore implements StoreBase {
       loadData,
       setDataSet,
       addData,
-      editData
+      editData,
     };
   }
 }
@@ -103,5 +98,5 @@ const value: ValueType<DataStore> = {};
 
 export default {
   createStore: new DataStore().createStore,
-  value
+  value,
 };
