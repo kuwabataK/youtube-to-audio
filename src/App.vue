@@ -34,10 +34,10 @@
             ></v-text-field>
           </v-responsive>
           <v-spacer></v-spacer>
-          <v-btn v-if="!isLogin" @click="loginStore.login" outlined>
+          <v-btn v-if="isShowLoginBtn && !isLogin" @click="loginStore.login" outlined>
             ログイン
           </v-btn>
-          <v-btn v-if="isLogin" @click="loginStore.logout" outlined>
+          <v-btn v-if="isShowLoginBtn && isLogin" @click="loginStore.logout" outlined>
             ログアウト
           </v-btn>
         </v-app-bar>
@@ -55,6 +55,7 @@ import { defineComponent, onMounted, reactive } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
+import { isMobile } from "./Util";
 
 export default defineComponent({
   setup() {
@@ -77,6 +78,9 @@ export default defineComponent({
       loginStore,
       get isLogin() {
         return loginStore.isLogin;
+      },
+      get isShowLoginBtn() {
+        return !isMobile();
       },
       dataStore,
       state,
