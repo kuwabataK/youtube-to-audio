@@ -26,7 +26,7 @@ class LoginStore implements StoreBase {
     });
 
     const isLogin = computed(() => {
-      return state.user && state.token;
+      return !!(state.user && state.token);
     });
 
     const login = async () => {
@@ -64,10 +64,7 @@ class LoginStore implements StoreBase {
         .auth()
         .signOut()
         .then(() => {
-          // Sign-out successful.
-          console.info("ログアウト");
-          state.token = undefined;
-          state.user = null;
+          window.location.reload();
         })
         .catch((error) => {
           // An error happened.

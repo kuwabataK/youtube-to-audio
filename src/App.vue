@@ -19,7 +19,7 @@
 
         <v-app-bar app>
           <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>V Button(仮)(α版)</v-toolbar-title>
+          <v-toolbar-title>V Button</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-responsive max-width="260">
             <v-text-field
