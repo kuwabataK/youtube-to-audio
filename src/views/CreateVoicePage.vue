@@ -99,6 +99,7 @@ export default defineComponent({
     const masterStore = StoreUtil.useStore("MasterStore");
     const dataStore = StoreUtil.useStore("DataStore");
     const { yt, id: playerDivId } = StoreUtil.useStore("YoutubeStore");
+    const loginStore = StoreUtil.useStore("LoginStore");
     onMounted(async () => {
       // ロード完了から1秒待ってplayerを準備する
       await sleep(1000);
@@ -111,9 +112,12 @@ export default defineComponent({
       dataStore,
       filteredDataSet,
       masterStore,
-      get isDisableCreateButton() {
-        return isMobile();
-      },
+      /**
+       * Createボタンを非アクティブにするかどうか
+       */
+      isDisableCreateButton: computed(() => {
+        return isMobile() || !loginStore.isLogin.value;
+      }),
       state,
       dataSet,
       openEdit,

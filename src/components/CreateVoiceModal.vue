@@ -81,11 +81,23 @@
                 swatches-max-height="75"
               ></v-color-picker>
             </v-col>
+            <v-col cols="6">
+              <v-switch
+                cols="6"
+                :value="isPublic"
+                @change="setIsPublic"
+                hide-details
+                label="ボタンを公開する"
+              ></v-switch>
+            </v-col>
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn color="red" text @click="deleteData" v-if="state.id">
+          Delete
+        </v-btn>
         <v-btn color="blue darken-1" text @click="closeDialog">
           Close
         </v-btn>
@@ -120,9 +132,10 @@ export default defineComponent({
       title: "",
       tag: "",
       color: "",
+      access: "private" as "public" | "private",
     });
     const { yt } = StoreUtil.useStore("YoutubeStore");
-    const { addData, editData, dataSetOnlyUser } = StoreUtil.useStore("DataStore");
+    const { addData, editData, dataSetOnlyUser, deleteData } = StoreUtil.useStore("DataStore");
     const loginStore = StoreUtil.useStore("LoginStore");
     const { editDataId } = props;
     onMounted(() => {
@@ -137,6 +150,7 @@ export default defineComponent({
         state.tag = editData.tag.join(",");
         state.color = editData.color || "";
         state.id = editData.id;
+        state.access = editData.access;
       }
     });
     const startTime = computed(() => {
@@ -187,6 +201,16 @@ export default defineComponent({
     const disableTestPlay = computed(() => {
       return !state.videoId || !state.startStr || !state.endStr;
     });
+    const isPublic = computed(() => {
+      return state.access === "public";
+    });
+    const setIsPublic = (status: boolean) => {
+      if (status) {
+        state.access = "public";
+      } else {
+        state.access = "private";
+      }
+    };
     const disableSave = computed(() => {
       return !state.title || !state.videoId || !state.startStr || !state.endStr;
     });
@@ -200,13 +224,15 @@ export default defineComponent({
       testPlayVideo,
       disableTestPlay,
       disableSave,
+      isPublic,
+      setIsPublic,
       /**
        * データを保存する
        */
-      saveData() {
+      async saveData() {
         if (!loginStore.state.user) return;
         if (state.id) {
-          editData({
+          await editData({
             id: state.id,
             title: state.title,
             videoId: state.videoId,
@@ -214,12 +240,12 @@ export default defineComponent({
             end: parseToSec(state.endStr),
             tag: state.tag.split(","),
             color: state.color,
-            access: "private",
+            access: state.access,
             createBy: loginStore.state.user.uid,
             isOwnData: true,
           });
         } else {
-          addData({
+          await addData({
             id: uuidv4(),
             title: state.title,
             videoId: state.videoId,
@@ -227,11 +253,17 @@ export default defineComponent({
             end: parseToSec(state.endStr),
             tag: state.tag.split(","),
             color: state.color,
-            access: "public",
+            access: state.access,
             createBy: loginStore.state.user.uid,
             isOwnData: true,
           });
         }
+        closeDialog();
+      },
+      async deleteData() {
+        if (!loginStore.state.user) return;
+        if (!state.id) return;
+        await deleteData(state.id);
         closeDialog();
       },
     };

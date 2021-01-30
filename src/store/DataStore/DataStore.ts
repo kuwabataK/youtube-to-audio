@@ -41,7 +41,7 @@ class DataStore implements StoreBase {
               return {
                 ...d,
                 isLocalData: true,
-                isOwnData: true,
+                isOwnData: false,
               };
             }),
           ];
@@ -70,7 +70,7 @@ class DataStore implements StoreBase {
         return {
           ...d,
           get isOwnData() {
-            return d.createBy === userId;
+            return d.createBy === LoginStore.value.state?.user?.uid;
           },
         };
       });
@@ -135,6 +135,15 @@ class DataStore implements StoreBase {
       state.dataSet = [...removedDataSet, editedData];
       return changeFireBaseData(editedData);
     };
+    const deleteData = (id: string) => {
+      state.dataSet = state.dataSet.filter((d) => d.id !== id);
+      // publicとprivateで同じデータが存在しないようにするための制御を行う
+      const userId = LoginStore.value.state?.user?.uid;
+      const updates: Record<string, AudioData | null> = {};
+      updates[`privateDataSet/${userId}/` + id] = null;
+      updates["dataSet/" + id] = null;
+      return fireBaseUtil.database.ref().update(updates);
+    };
     return {
       state,
       dataSet,
@@ -143,6 +152,7 @@ class DataStore implements StoreBase {
       loadData,
       addData,
       editData,
+      deleteData,
     };
   }
 }
