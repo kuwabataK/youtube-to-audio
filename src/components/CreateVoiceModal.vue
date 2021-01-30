@@ -123,6 +123,7 @@ export default defineComponent({
     });
     const { yt } = StoreUtil.useStore("YoutubeStore");
     const { addData, editData, dataSetOnlyUser } = StoreUtil.useStore("DataStore");
+    const loginStore = StoreUtil.useStore("LoginStore");
     const { editDataId } = props;
     onMounted(() => {
       if (editDataId) {
@@ -203,6 +204,7 @@ export default defineComponent({
        * データを保存する
        */
       saveData() {
+        if (!loginStore.state.user) return;
         if (state.id) {
           editData({
             id: state.id,
@@ -213,7 +215,7 @@ export default defineComponent({
             tag: state.tag.split(","),
             color: state.color,
             access: "private",
-            createBy: "dummy",
+            createBy: loginStore.state.user.uid,
             isOwnData: true,
           });
         } else {
@@ -226,7 +228,7 @@ export default defineComponent({
             tag: state.tag.split(","),
             color: state.color,
             access: "public",
-            createBy: "dummy",
+            createBy: loginStore.state.user.uid,
             isOwnData: true,
           });
         }

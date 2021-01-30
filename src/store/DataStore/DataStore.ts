@@ -1,8 +1,7 @@
-import { computed, reactive, watch } from "@vue/composition-api";
+import { computed, reactive } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
 import { fireBaseUtil } from "@/main";
-
-const dummyUserId = "dummy";
+import LoginStore from "../LoginStore/LoginStore";
 
 export type AudioData = {
   id: string;
@@ -57,29 +56,42 @@ class DataStore implements StoreBase {
     const loadData = async () => {
       loadLocalData();
       const dataRef = fireBaseUtil.database.ref("/dataSet");
-      const data = await dataRef.once("value");
-      const privateDataRef = fireBaseUtil.database.ref(`privateDataSet/${dummyUserId}/`);
-      const privateData = await privateDataRef.once("value");
+      const data = (await dataRef.once("value")).val();
+      let privateData: Record<string, AudioData> = {};
+      const userId = LoginStore.value.state?.user?.uid;
+      if (userId) {
+        const privateDataRef = fireBaseUtil.database.ref(`privateDataSet/${userId}/`);
+        privateData = (await privateDataRef.once("value")).val();
+      }
       const dataList = [
-        ...(Object.values(data.val()) as AudioData[]),
-        ...(Object.values(privateData.val()) as AudioData[]),
+        ...Object.values((data as AudioData[]) || {}),
+        ...Object.values(privateData || {}),
       ].map((d) => {
         return {
           ...d,
           get isOwnData() {
-            return d.createBy === dummyUserId; // TODO: Userの判定をちゃんと行う
+            return d.createBy === userId;
           },
         };
       });
       state.dataSet = [...state.dataSet, ...dataList];
     };
+    /**
+     * 自身のデータ
+     */
     const dataSetOnlyUser = computed(() => {
       return state.dataSet.filter((d) => d.isOwnData);
     });
+    /**
+     * 画面で表示するデータ
+     */
     const dataSet = computed(() => {
       if (state.showOnlyUserData) return dataSetOnlyUser.value;
       return state.dataSet;
     });
+    /**
+     * 検索後のデータ
+     */
     const filteredDataSet = computed(() => {
       return dataSet.value.filter((d) => {
         if (searchTexts.value.length === 0) return true;
@@ -98,11 +110,11 @@ class DataStore implements StoreBase {
       const postData = { ...data };
       delete postData.isOwnData;
       postData.isLocalData = false;
+      const userId = LoginStore.value.state?.user?.uid;
 
       // publicとprivateで同じデータが存在しないようにするための制御を行う
       const updates: Record<string, AudioData | null> = {};
-      updates[`privateDataSet/${dummyUserId}/` + data.id] =
-        data.access === "private" ? postData : null;
+      updates[`privateDataSet/${userId}/` + data.id] = data.access === "private" ? postData : null;
       updates["dataSet/" + data.id] = data.access === "private" ? null : postData;
       return fireBaseUtil.database.ref().update(updates);
     };

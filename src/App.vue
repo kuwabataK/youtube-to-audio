@@ -64,8 +64,8 @@ export default defineComponent({
     const loginStore = StoreUtil.useStore("LoginStore");
     onMounted(async () => {
       loadYoutubeApi();
+      await loginStore.redirectLogin();
       loadData();
-      loginStore.redirectLogin();
     });
     const state = reactive({
       drawer: false,
