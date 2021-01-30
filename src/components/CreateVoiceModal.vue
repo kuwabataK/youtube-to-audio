@@ -162,7 +162,7 @@ export default defineComponent({
     watch(startTime, () => {
       if (startTime.value == null || endTime.value == null) return;
       if (startTime.value >= endTime.value) {
-        state.endStr = parseToSecStr(startTime.value + 1);
+        state.endStr = parseToSecStr(startTime.value + 5);
       }
     });
     /**
