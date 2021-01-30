@@ -15,6 +15,8 @@ export type AudioData = {
   isLocalData?: boolean;
   access: "private" | "public";
   createBy: string;
+  createdDate?: number;
+  updatedDate?: number;
 };
 
 /**
@@ -74,7 +76,11 @@ class DataStore implements StoreBase {
           },
         };
       });
-      state.dataSet = [...state.dataSet, ...dataList];
+      const dataSet = [...state.dataSet, ...dataList];
+      dataSet.sort((a, b) => {
+        return (a.updatedDate || 0) - (b.updatedDate || 0);
+      });
+      state.dataSet = dataSet;
     };
     /**
      * 自身のデータ

@@ -232,6 +232,7 @@ export default defineComponent({
       async saveData() {
         if (!loginStore.state.user) return;
         if (state.id) {
+          const editedData = dataSetOnlyUser.value.find((d) => d.id === editDataId);
           await editData({
             id: state.id,
             title: state.title,
@@ -243,6 +244,8 @@ export default defineComponent({
             access: state.access,
             createBy: loginStore.state.user.uid,
             isOwnData: true,
+            createdDate: editedData?.createdDate,
+            updatedDate: new Date().getTime(),
           });
         } else {
           await addData({
@@ -256,6 +259,8 @@ export default defineComponent({
             access: state.access,
             createBy: loginStore.state.user.uid,
             isOwnData: true,
+            createdDate: new Date().getTime(),
+            updatedDate: new Date().getTime(),
           });
         }
         closeDialog();
