@@ -66,6 +66,7 @@ export default defineComponent({
     onMounted(async () => {
       loadYoutubeApi();
       await loginStore.redirectLogin();
+      loginStore.loadLoginedData();
       loadData();
     });
     const state = reactive({

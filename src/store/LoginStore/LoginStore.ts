@@ -22,16 +22,23 @@ export type AudioData = {
 class LoginStore implements StoreBase {
   createStore() {
     const state = reactive({
-      token: undefined as string | undefined,
       user: null as null | firebase.User,
     });
 
     const isLogin = computed(() => {
-      return !!(state.user && state.token);
+      return !!state.user;
     });
 
+    const loadLoginedData = () => {
+      state.user = firebase.auth().currentUser;
+    };
     const login = async () => {
-      await firebase.auth().signInWithRedirect(fireBaseUtil.googleAuthProvider);
+      await firebase
+        .auth()
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+          return firebase.auth().signInWithRedirect(fireBaseUtil.googleAuthProvider);
+        });
     };
     const redirectLogin = async () => {
       return firebase
@@ -41,9 +48,6 @@ class LoginStore implements StoreBase {
           console.log("ログイン成功！！！");
           if (result.credential) {
             const credential = result.credential as firebase.auth.OAuthCredential;
-
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            state.token = credential.accessToken;
             // ...
           }
           // The signed-in user info.
@@ -76,6 +80,7 @@ class LoginStore implements StoreBase {
       login,
       logout,
       redirectLogin,
+      loadLoginedData,
       isLogin,
     };
   }

@@ -150,8 +150,8 @@ class DataStore implements StoreBase {
      */
     const addData = (newData: AudioData) => {
       state.dataSet.push(newData);
+      saveLocalData();
       if (!LoginStore.value.isLogin?.value) {
-        saveLocalData();
         return Promise.resolve();
       }
       return changeFireBaseData(newData);
@@ -163,16 +163,16 @@ class DataStore implements StoreBase {
     const editData = (editedData: AudioData) => {
       const removedDataSet = state.dataSet.filter((d) => d.id !== editedData.id);
       state.dataSet = [...removedDataSet, editedData];
+      saveLocalData();
       if (!LoginStore.value.isLogin?.value) {
-        saveLocalData();
         return Promise.resolve();
       }
       return changeFireBaseData(editedData);
     };
     const deleteData = (id: string) => {
       state.dataSet = state.dataSet.filter((d) => d.id !== id);
+      saveLocalData();
       if (!LoginStore.value.isLogin?.value) {
-        saveLocalData();
         return Promise.resolve();
       }
       // publicとprivateで同じデータが存在しないようにするための制御を行う
