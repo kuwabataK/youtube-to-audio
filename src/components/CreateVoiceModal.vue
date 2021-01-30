@@ -252,7 +252,7 @@ export default defineComponent({
             access: state.access,
             createBy: loginStore.state.user?.uid || "localUser",
             isOwnData: true,
-            createdDate: editedData?.createdDate,
+            createdDate: editedData?.createdDate || new Date().getTime(),
             updatedDate: new Date().getTime(),
             isLocalData: !loginStore.isLogin.value,
           });
