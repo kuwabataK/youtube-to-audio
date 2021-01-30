@@ -54,7 +54,7 @@
           :start="data.start"
           :end="data.end"
           :title="data.title"
-          :showEditButton="data.isOwnData"
+          :showEditButton="data.isOwnData && !isDisableCreateButton"
           @openEdit="openEdit(data.id)"
         />
       </v-col>
