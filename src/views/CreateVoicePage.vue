@@ -53,6 +53,9 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
+        ※ボタンの追加はPC版でのみ利用できます
+      </v-col>
+      <v-col cols="12">
         <link-label
           v-for="data in filteredDataSet"
           :key="data.id"
@@ -66,8 +69,6 @@
         />
       </v-col>
       <v-col cols="12">
-        ※ボタンの追加はPC版Chromeでのみ利用できます
-        <p />
         ※youtubeの動画を再生しているので、広告が再生される場合があります
         <p />
         ※生放送終了直後の動画をボタンにするとうまく再生できない場合があります
