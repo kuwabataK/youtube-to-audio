@@ -19,7 +19,7 @@
 
         <v-app-bar app>
           <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>V Button(仮)(α版)</v-toolbar-title>
+          <v-toolbar-title>V Button</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-responsive max-width="260">
             <v-text-field
@@ -33,6 +33,13 @@
               prepend-inner-icon="mdi-magnify"
             ></v-text-field>
           </v-responsive>
+          <v-spacer></v-spacer>
+          <v-btn v-if="!isLogin" @click="loginStore.login" outlined>
+            ログイン
+          </v-btn>
+          <v-btn v-if="isLogin" @click="loginStore.logout" outlined>
+            ログアウト
+          </v-btn>
         </v-app-bar>
 
         <v-main>
@@ -54,24 +61,30 @@ export default defineComponent({
     const { loadData } = StoreUtil.useStore("DataStore");
     const dataStore = StoreUtil.useStore("DataStore");
     const masterStore = StoreUtil.useStore("MasterStore");
+    const loginStore = StoreUtil.useStore("LoginStore");
     onMounted(async () => {
       loadYoutubeApi();
+      await loginStore.redirectLogin();
       loadData();
     });
     const state = reactive({
-      drawer: false
+      drawer: false,
     });
     const changeDrawer = () => {
       state.drawer = !state.drawer;
     };
     return {
+      loginStore,
+      get isLogin() {
+        return loginStore.isLogin;
+      },
       dataStore,
       state,
       changeDrawer,
       router,
-      masterStore
+      masterStore,
     };
-  }
+  },
 });
 </script>
 

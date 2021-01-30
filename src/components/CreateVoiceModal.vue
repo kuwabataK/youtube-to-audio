@@ -22,7 +22,7 @@
               <Player
                 :videoId="state.videoId"
                 @updateCurrentTime="
-                  time => {
+                  (time) => {
                     state.currentTime = time;
                   }
                 "
@@ -38,9 +38,7 @@
               ></v-text-field>
             </v-col>
             <v-col cols="3" class="mt-4">
-              <v-btn small color="primary" @click="setTimeToStart"
-                >今の動画時間をセット</v-btn
-              >
+              <v-btn small color="primary" @click="setTimeToStart">今の動画時間をセット</v-btn>
             </v-col>
             <v-col cols="2">
               <v-text-field
@@ -52,26 +50,15 @@
               ></v-text-field>
             </v-col>
             <v-col cols="3" class="mt-4">
-              <v-btn small color="primary" @click="setTimeToEnd"
-                >今の動画時間をセット</v-btn
-              >
+              <v-btn small color="primary" @click="setTimeToEnd">今の動画時間をセット</v-btn>
             </v-col>
             <v-col cols="2" class="mt-4">
-              <v-btn
-                small
-                color="primary"
-                @click="testPlayVideo"
-                :disabled="disableTestPlay"
+              <v-btn small color="primary" @click="testPlayVideo" :disabled="disableTestPlay"
                 >Test Play</v-btn
               >
             </v-col>
             <v-col cols="12">
-              <v-text-field
-                label="title"
-                v-model="state.title"
-                type="text"
-                required
-              ></v-text-field>
+              <v-text-field label="title" v-model="state.title" type="text" required></v-text-field>
             </v-col>
             <v-col cols="8">
               <v-text-field
@@ -94,20 +81,27 @@
                 swatches-max-height="75"
               ></v-color-picker>
             </v-col>
+            <v-col cols="6">
+              <v-switch
+                cols="6"
+                :value="isPublic"
+                @change="setIsPublic"
+                hide-details
+                label="ボタンを公開する"
+              ></v-switch>
+            </v-col>
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <v-btn color="red" text @click="deleteData" v-if="state.id">
+          Delete
+        </v-btn>
         <v-btn color="blue darken-1" text @click="closeDialog">
           Close
         </v-btn>
-        <v-btn
-          color="blue darken-1"
-          text
-          @click="saveData"
-          :disabled="disableSave"
-        >
+        <v-btn color="blue darken-1" text @click="saveData" :disabled="disableSave">
           Save
         </v-btn>
       </v-card-actions>
@@ -115,20 +109,9 @@
   </v-dialog>
 </template>
 <script lang="ts">
-import {
-  defineComponent,
-  reactive,
-  computed,
-  onMounted,
-  watch
-} from "@vue/composition-api";
+import { defineComponent, reactive, computed, onMounted, watch } from "@vue/composition-api";
 import Player from "./Player.vue";
-import {
-  getVideoIdFromUrl,
-  parseToSecStr,
-  parseToSec,
-  getUrlFromId
-} from "@/Util";
+import { getVideoIdFromUrl, parseToSecStr, parseToSec, getUrlFromId } from "@/Util";
 import StoreUtil from "@/store/StoreUtil";
 import { v4 as uuidv4 } from "uuid";
 
@@ -136,7 +119,7 @@ export default defineComponent({
   name: "CreateVoiceModal",
   components: { Player },
   props: {
-    editDataId: String as () => string | undefined
+    editDataId: String as () => string | undefined,
   },
   setup(props, context) {
     const state = reactive({
@@ -148,16 +131,16 @@ export default defineComponent({
       currentTime: 0,
       title: "",
       tag: "",
-      color: ""
+      color: "",
+      access: "private" as "public" | "private",
     });
     const { yt } = StoreUtil.useStore("YoutubeStore");
-    const { addData, editData, dataSetOnlyUser } = StoreUtil.useStore(
-      "DataStore"
-    );
+    const { addData, editData, dataSetOnlyUser, deleteData } = StoreUtil.useStore("DataStore");
+    const loginStore = StoreUtil.useStore("LoginStore");
     const { editDataId } = props;
     onMounted(() => {
       if (editDataId) {
-        const editData = dataSetOnlyUser.value.find(d => d.id === editDataId);
+        const editData = dataSetOnlyUser.value.find((d) => d.id === editDataId);
         if (!editData) return;
         state.url = getUrlFromId(editData.videoId);
         state.videoId = editData.videoId;
@@ -167,6 +150,7 @@ export default defineComponent({
         state.tag = editData.tag.join(",");
         state.color = editData.color || "";
         state.id = editData.id;
+        state.access = editData.access;
       }
     });
     const startTime = computed(() => {
@@ -209,7 +193,7 @@ export default defineComponent({
       yt.player?.loadVideoById({
         videoId: state.videoId,
         startSeconds: parseToSec(state.startStr),
-        endSeconds: parseToSec(state.endStr)
+        endSeconds: parseToSec(state.endStr),
       });
       yt.player?.unMute();
       yt.player?.playVideo();
@@ -217,6 +201,16 @@ export default defineComponent({
     const disableTestPlay = computed(() => {
       return !state.videoId || !state.startStr || !state.endStr;
     });
+    const isPublic = computed(() => {
+      return state.access === "public";
+    });
+    const setIsPublic = (status: boolean) => {
+      if (status) {
+        state.access = "public";
+      } else {
+        state.access = "private";
+      }
+    };
     const disableSave = computed(() => {
       return !state.title || !state.videoId || !state.startStr || !state.endStr;
     });
@@ -230,34 +224,49 @@ export default defineComponent({
       testPlayVideo,
       disableTestPlay,
       disableSave,
+      isPublic,
+      setIsPublic,
       /**
        * データを保存する
        */
-      saveData() {
+      async saveData() {
+        if (!loginStore.state.user) return;
         if (state.id) {
-          editData({
+          await editData({
             id: state.id,
             title: state.title,
             videoId: state.videoId,
             start: parseToSec(state.startStr),
             end: parseToSec(state.endStr),
             tag: state.tag.split(","),
-            color: state.color
+            color: state.color,
+            access: state.access,
+            createBy: loginStore.state.user.uid,
+            isOwnData: true,
           });
         } else {
-          addData({
+          await addData({
             id: uuidv4(),
             title: state.title,
             videoId: state.videoId,
             start: parseToSec(state.startStr),
             end: parseToSec(state.endStr),
             tag: state.tag.split(","),
-            color: state.color
+            color: state.color,
+            access: state.access,
+            createBy: loginStore.state.user.uid,
+            isOwnData: true,
           });
         }
         closeDialog();
-      }
+      },
+      async deleteData() {
+        if (!loginStore.state.user) return;
+        if (!state.id) return;
+        await deleteData(state.id);
+        closeDialog();
+      },
     };
-  }
+  },
 });
 </script>
