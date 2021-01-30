@@ -58,14 +58,21 @@
               >
             </v-col>
             <v-col cols="12">
-              <v-text-field label="title" v-model="state.title" type="text" required></v-text-field>
+              <v-text-field
+                label="title"
+                hint="ボタンの名前を指定します"
+                v-model="state.title"
+                type="text"
+                required
+              ></v-text-field>
             </v-col>
             <v-col cols="8">
               <v-text-field
                 label="tag"
                 v-model="state.tag"
-                hint="複数指定する場合はカンマ区切りで指定してください"
+                hint="ここに指定した文字列で検索できます。複数指定する場合はカンマ区切りで指定してください"
                 type="text"
+                placeholder="例: 大空スバル,Hololive,ホロライブ"
                 required
               ></v-text-field>
             </v-col>
