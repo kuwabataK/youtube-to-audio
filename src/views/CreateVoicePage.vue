@@ -29,7 +29,6 @@
       </v-row>
       <v-col cols="12">
         <v-btn
-          v-if="isLogin"
           color="primary"
           class="mt-10"
           :disabled="isDisableCreateButton"
@@ -41,15 +40,6 @@
           "
         >
           ボタンをつくる
-        </v-btn>
-        <v-btn
-          color="primary"
-          class="mt-10"
-          v-if="!isLogin"
-          :disabled="isDisableLogin"
-          @click="() => loginStore.login()"
-        >
-          ログインしてボタンをつくる
         </v-btn>
       </v-col>
       <v-col cols="12">
@@ -131,9 +121,6 @@ export default defineComponent({
        * Createボタンを非アクティブにするかどうか
        */
       isDisableCreateButton: computed(() => {
-        return isMobile() || !loginStore.isLogin.value;
-      }),
-      isDisableLogin: computed(() => {
         return isMobile();
       }),
       state,

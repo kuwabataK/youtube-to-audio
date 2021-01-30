@@ -1,4 +1,4 @@
-import { computed, reactive } from "@vue/composition-api";
+import { computed, reactive, watch } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
 import { fireBaseUtil } from "@/main";
 import LoginStore from "../LoginStore/LoginStore";
@@ -33,6 +33,9 @@ class DataStore implements StoreBase {
     const searchTexts = computed(() => {
       return state.searchText.split(/[\u{20}\u{3000}]/u);
     });
+    /**
+     * ローカルデータをロードする
+     */
     const loadLocalData = () => {
       try {
         const dataSet = localStorage.getItem("_DATA_SET_");
@@ -43,13 +46,23 @@ class DataStore implements StoreBase {
               return {
                 ...d,
                 isLocalData: true,
-                isOwnData: false,
+                isOwnData: true,
               };
             }),
           ];
         }
       } catch (_) {
         console.error("ロードに失敗しました");
+      }
+    };
+    const saveLocalData = () => {
+      try {
+        const dataSet = state.dataSet.filter((d) => d.isLocalData);
+        if (dataSet) {
+          localStorage.setItem("_DATA_SET_", JSON.stringify(dataSet));
+        }
+      } catch (_) {
+        console.error("Saveに失敗しました");
       }
     };
     /**
@@ -119,6 +132,7 @@ class DataStore implements StoreBase {
      * @param data
      */
     const changeFireBaseData = (data: AudioData) => {
+      if (!LoginStore.value.isLogin?.value) return;
       const postData = { ...data };
       delete postData.isOwnData;
       postData.isLocalData = false;
@@ -136,6 +150,10 @@ class DataStore implements StoreBase {
      */
     const addData = (newData: AudioData) => {
       state.dataSet.push(newData);
+      if (!LoginStore.value.isLogin?.value) {
+        saveLocalData();
+        return Promise.resolve();
+      }
       return changeFireBaseData(newData);
     };
     /**
@@ -145,10 +163,18 @@ class DataStore implements StoreBase {
     const editData = (editedData: AudioData) => {
       const removedDataSet = state.dataSet.filter((d) => d.id !== editedData.id);
       state.dataSet = [...removedDataSet, editedData];
+      if (!LoginStore.value.isLogin?.value) {
+        saveLocalData();
+        return Promise.resolve();
+      }
       return changeFireBaseData(editedData);
     };
     const deleteData = (id: string) => {
       state.dataSet = state.dataSet.filter((d) => d.id !== id);
+      if (!LoginStore.value.isLogin?.value) {
+        saveLocalData();
+        return Promise.resolve();
+      }
       // publicとprivateで同じデータが存在しないようにするための制御を行う
       const userId = LoginStore.value.state?.user?.uid;
       const updates: Record<string, AudioData | null> = {};

@@ -86,8 +86,9 @@
                 cols="6"
                 :value="isPublic"
                 @change="setIsPublic"
+                :disabled="disabledShare"
                 hide-details
-                label="ボタンを公開する"
+                :label="shareLabel"
               ></v-switch>
             </v-col>
           </v-row>
@@ -214,6 +215,12 @@ export default defineComponent({
     const disableSave = computed(() => {
       return !state.title || !state.videoId || !state.startStr || !state.endStr;
     });
+    const disabledShare = computed(() => {
+      return !loginStore.isLogin.value;
+    });
+    const shareLabel = computed(() => {
+      return disabledShare.value ? "ボタンを公開する（ログインが必要です）" : "ボタンを公開する";
+    });
     return {
       state,
       props,
@@ -226,11 +233,12 @@ export default defineComponent({
       disableSave,
       isPublic,
       setIsPublic,
+      disabledShare,
+      shareLabel,
       /**
        * データを保存する
        */
       async saveData() {
-        if (!loginStore.state.user) return;
         if (state.id) {
           const editedData = dataSetOnlyUser.value.find((d) => d.id === editDataId);
           await editData({
@@ -242,10 +250,11 @@ export default defineComponent({
             tag: state.tag.split(","),
             color: state.color,
             access: state.access,
-            createBy: loginStore.state.user.uid,
+            createBy: loginStore.state.user?.uid || "localUser",
             isOwnData: true,
             createdDate: editedData?.createdDate,
             updatedDate: new Date().getTime(),
+            isLocalData: !loginStore.isLogin.value,
           });
         } else {
           await addData({
@@ -257,16 +266,16 @@ export default defineComponent({
             tag: state.tag.split(","),
             color: state.color,
             access: state.access,
-            createBy: loginStore.state.user.uid,
+            createBy: loginStore.state.user?.uid || "localUser",
             isOwnData: true,
             createdDate: new Date().getTime(),
             updatedDate: new Date().getTime(),
+            isLocalData: !loginStore.isLogin.value,
           });
         }
         closeDialog();
       },
       async deleteData() {
-        if (!loginStore.state.user) return;
         if (!state.id) return;
         await deleteData(state.id);
         closeDialog();
