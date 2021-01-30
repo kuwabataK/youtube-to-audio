@@ -58,24 +58,30 @@ class DataStore implements StoreBase {
     const loadData = async () => {
       loadLocalData();
       const dataRef = fireBaseUtil.database.ref("/dataSet");
-      const data = (await dataRef.once("value")).val();
+      let data: Record<string, AudioData> = {};
       let privateData: Record<string, AudioData> = {};
       const userId = LoginStore.value.state?.user?.uid;
       if (userId) {
         const privateDataRef = fireBaseUtil.database.ref(`privateDataSet/${userId}/`);
-        privateData = (await privateDataRef.once("value")).val();
+        const [_data, _privateData] = await Promise.all([
+          dataRef.once("value"),
+          privateDataRef.once("value"),
+        ]);
+        data = _data.val();
+        privateData = _privateData.val();
+      } else {
+        data = await (await dataRef.once("value")).val();
       }
-      const dataList = [
-        ...Object.values((data as AudioData[]) || {}),
-        ...Object.values(privateData || {}),
-      ].map((d) => {
-        return {
-          ...d,
-          get isOwnData() {
-            return d.createBy === LoginStore.value.state?.user?.uid;
-          },
-        };
-      });
+      const dataList = [...Object.values(data || {}), ...Object.values(privateData || {})].map(
+        (d) => {
+          return {
+            ...d,
+            get isOwnData() {
+              return d.createBy === LoginStore.value.state?.user?.uid;
+            },
+          };
+        }
+      );
       const dataSet = [...state.dataSet, ...dataList];
       dataSet.sort((a, b) => {
         return (a.updatedDate || 0) - (b.updatedDate || 0);

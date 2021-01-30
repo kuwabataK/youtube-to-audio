@@ -1,6 +1,7 @@
-import { computed, reactive, watch } from "@vue/composition-api";
+import { computed, reactive } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
-import firebase from "firebase";
+import firebase from "firebase/app";
+import "firebase/auth";
 import { fireBaseUtil } from "@/main";
 
 export type AudioData = {

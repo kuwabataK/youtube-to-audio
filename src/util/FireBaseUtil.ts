@@ -1,11 +1,7 @@
-import firebase from "firebase";
-// If you enabled Analytics in your project, add the Firebase SDK for Analytics
-import "firebase/analytics";
-
-// Add the Firebase products that you want to use
+import firebase from "firebase/app";
+import "firebase/database";
 import "firebase/auth";
-import "firebase/firestore";
-
+import "firebase/analytics";
 export class FireBaseUtil {
   constructor() {
     // Your web app's Firebase configuration
