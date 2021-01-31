@@ -7,6 +7,9 @@ import "@mdi/font/css/materialdesignicons.css";
 import VueCompositionAPI from "@vue/composition-api";
 import StoreUtil from "./store/StoreUtil";
 import { FireBaseUtil } from "./util/FireBaseUtil";
+import { loadYoutubeApi } from "./Hooks/useYoutube";
+
+loadYoutubeApi();
 
 Vue.config.productionTip = false;
 Vue.use(VueCompositionAPI);

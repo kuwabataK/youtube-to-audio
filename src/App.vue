@@ -64,7 +64,6 @@ export default defineComponent({
     const masterStore = StoreUtil.useStore("MasterStore");
     const loginStore = StoreUtil.useStore("LoginStore");
     onMounted(async () => {
-      loadYoutubeApi();
       await loginStore.redirectLogin();
       loginStore.loadLoginedData();
       loadData();
