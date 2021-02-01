@@ -6,6 +6,10 @@
       :editDataId="state.editDataId"
     />
     <v-container>
+      <v-col>
+        VTuberのyoutube動画を読み込んで、指定箇所の音声を再生できるボタンを作成 /
+        共有できるサイトです。
+      </v-col>
       <v-col cols="12" v-show="masterStore.state.isShowVideo">
         <div class="main-player">
           <div :id="playerDivId" />
@@ -43,7 +47,7 @@
         </v-btn>
       </v-col>
       <v-col cols="12">
-        ※ボタンの追加はPC版でのみ利用できます
+        ※ボタンの追加はPCブラウザでのみ利用できます
       </v-col>
       <v-col cols="12">
         <link-label
