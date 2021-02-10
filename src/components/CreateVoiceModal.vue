@@ -58,6 +58,9 @@
               >
             </v-col>
             <v-col cols="12">
+              <v-slider v-model="yt.volume" label="volume" :min="0" :max="100" />
+            </v-col>
+            <v-col cols="12">
               <v-text-field
                 label="title"
                 hint="ボタンの名前を指定します"
@@ -159,6 +162,7 @@ export default defineComponent({
         state.color = editData.color || "";
         state.id = editData.id;
         state.access = editData.access;
+        yt.volume = editData.volume ?? 50;
       }
     });
     const startTime = computed(() => {
@@ -229,6 +233,7 @@ export default defineComponent({
       return disabledShare.value ? "ボタンを公開する（ログインが必要です）" : "ボタンを公開する";
     });
     return {
+      yt,
       state,
       props,
       closeDialog,
@@ -262,6 +267,7 @@ export default defineComponent({
             createdDate: editedData?.createdDate || new Date().getTime(),
             updatedDate: new Date().getTime(),
             isLocalData: !loginStore.isLogin.value,
+            volume: yt.volume,
           });
         } else {
           await addData({
@@ -278,6 +284,7 @@ export default defineComponent({
             createdDate: new Date().getTime(),
             updatedDate: new Date().getTime(),
             isLocalData: !loginStore.isLogin.value,
+            volume: yt.volume,
           });
         }
         closeDialog();

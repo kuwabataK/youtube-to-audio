@@ -17,6 +17,8 @@ export type Player = {
   mute: () => void;
   unMute: () => void;
   isMuted: () => boolean;
+  setVolume: (volume: number) => void;
+  getVolume: () => number;
   playVideo: () => void;
   pauseVideo: () => void;
   seekTo: (seconds: number, allowSeekAhead: boolean) => void;
@@ -90,6 +92,10 @@ export default function useYoutube(id: string) {
     isLoop: false,
     width: 480,
     height: 480 * (9 / 16),
+    /**
+     * 動画のVolume
+     */
+    volume: 50,
   });
 
   /**
@@ -177,6 +183,7 @@ export default function useYoutube(id: string) {
             if (options.playerVars?.start != null) {
               state.player?.seekTo(options.playerVars.start, true);
             }
+            state.player?.setVolume(state.volume);
             state.startTime = options.playerVars?.start;
             state.endTime = options.playerVars?.end;
             resolve(state.player as Player);
@@ -185,6 +192,18 @@ export default function useYoutube(id: string) {
       });
     });
   };
+
+  /**
+   * volumeの変更をplayerに反映する
+   */
+  watch(
+    () => state.volume,
+    () => {
+      if (state.player) {
+        state.player.setVolume(state.volume);
+      }
+    }
+  );
 
   const destroy = () => {
     state.player?.destroy();
@@ -229,6 +248,18 @@ export default function useYoutube(id: string) {
     },
     get endTime() {
       return state.endTime;
+    },
+    /**
+     * 音量
+     */
+    get volume() {
+      return state.volume;
+    },
+    /**
+     * 音量
+     */
+    set volume(volume: number) {
+      state.volume = volume;
     },
   };
 }

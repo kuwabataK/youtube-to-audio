@@ -35,6 +35,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    volume: {
+      type: Number,
+      default: 50,
+    },
   },
   setup(props, context) {
     const { yt } = StoreUtil.useStore("YoutubeStore");
@@ -48,6 +52,7 @@ export default defineComponent({
       });
       yt.player?.unMute();
       yt.player?.setPlaybackQuality("small");
+      yt.volume = props.volume;
       yt.player?.playVideo();
     };
     const urlWithTime = computed(() => {

@@ -17,6 +17,7 @@ export type AudioData = {
   createBy: string;
   createdDate?: number;
   updatedDate?: number;
+  volume?: number;
 };
 
 /**

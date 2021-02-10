@@ -59,6 +59,7 @@
           :end="data.end"
           :title="data.title"
           :showEditButton="data.isOwnData && !isDisableCreateButton"
+          :volume="data.volume"
           @openEdit="openEdit(data.id)"
         />
       </v-col>
