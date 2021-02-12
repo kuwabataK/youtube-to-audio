@@ -52,6 +52,7 @@
         <v-main>
           <common-player />
           <router-view />
+          <common-modal />
         </v-main>
       </v-app>
     </div>
@@ -65,10 +66,12 @@ import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
 import { isMobile } from "./Util";
 import CommonPlayer from "@/components/CommonPlayer.vue";
+import CommonModal from "@/components/CommonModal.vue";
 
 export default defineComponent({
   components: {
     CommonPlayer,
+    CommonModal,
   },
   setup() {
     const { loadData } = StoreUtil.useStore("DataStore");

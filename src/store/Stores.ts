@@ -1,11 +1,13 @@
 import YoutubeStore from "@/store/youtubeStore/YoutubeStore";
 import DataStore from "@/store/DataStore/DataStore";
 import LoginStore from "@/store/LoginStore/LoginStore";
+import CommonDialogStore from "@/store/CommonDialog/CommonDialogStore";
 
 /**
  * このプロジェクトで利用するStoreのMapリスト
  */
 export const StoreIndex = {
+  CommonDialogStore,
   YoutubeStore,
   DataStore,
   LoginStore,

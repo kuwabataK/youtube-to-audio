@@ -291,6 +291,9 @@ export default defineComponent({
       },
       async deleteData() {
         if (!state.id) return;
+        const { open } = StoreUtil.useStore("CommonDialogStore");
+        const res = await open({ title: "確認", message: "削除してもよろしいですか？" });
+        if (res !== "OK") return;
         await deleteData(state.id);
         closeDialog();
       },
