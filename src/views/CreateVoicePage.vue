@@ -10,27 +10,6 @@
         VTuberのyoutube動画を読み込んで、指定箇所の音声を再生できるボタンを作成 /
         共有できるサイトです。
       </v-col>
-      <v-col cols="12" v-show="masterStore.state.isShowVideo">
-        <div class="main-player">
-          <div :id="playerDivId" />
-        </div>
-      </v-col>
-      <v-row style="justify-content: center;">
-        <v-col cols="6">
-          <v-switch
-            cols="6"
-            v-model="masterStore.state.isShowVideo"
-            hide-details
-            label="動画プレイヤーを表示"
-          ></v-switch>
-          <v-switch
-            cols="6"
-            v-model="dataStore.state.showOnlyUserData"
-            label="自分の作ったボタンのみ表示"
-            hide-details
-          ></v-switch>
-        </v-col>
-      </v-row>
       <v-col cols="12">
         <v-btn
           color="primary"
@@ -49,6 +28,16 @@
       <v-col cols="12">
         ※ボタンの追加はPCブラウザでのみ利用できます
       </v-col>
+      <div class="filter-button-container">
+        <div class="filter-buttons">
+          <v-switch
+            inset
+            v-model="dataStore.state.showOnlyUserData"
+            label="自分の作ったボタンのみ表示"
+            hide-details
+          ></v-switch>
+        </div>
+      </div>
       <v-col cols="12">
         <link-label
           v-for="data in filteredDataSet"
@@ -79,9 +68,7 @@ import { defineComponent, reactive, computed, onMounted } from "@vue/composition
 import CreateVoiceModal from "@/components/CreateVoiceModal.vue";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
-import { sleep, canPlayAudio, isMobile } from "@/Util";
-
-const firstVideoSourceId = "mZ0sJQC8qkE";
+import { canPlayAudio, isMobile } from "@/Util";
 
 export default defineComponent({
   name: "CreateVoicePage",
@@ -102,26 +89,18 @@ export default defineComponent({
     const editedData = computed(() => {
       return dataSet.value.find((d) => d.id === state.editDataId);
     });
-    const masterStore = StoreUtil.useStore("MasterStore");
     const dataStore = StoreUtil.useStore("DataStore");
-    const { yt, id: playerDivId } = StoreUtil.useStore("YoutubeStore");
+    const { yt } = StoreUtil.useStore("YoutubeStore");
     const loginStore = StoreUtil.useStore("LoginStore");
-    onMounted(async () => {
-      // ロード完了から1秒待ってplayerを準備する
-      await sleep(1000);
-      yt.loadVideo(firstVideoSourceId);
-    });
     return {
       get isLogin() {
         return loginStore.isLogin;
       },
       loginStore,
       canPlayAudio: canPlayAudio(),
-      playerDivId,
       yt,
       dataStore,
       filteredDataSet,
-      masterStore,
       /**
        * Createボタンを非アクティブにするかどうか
        */
@@ -141,6 +120,14 @@ export default defineComponent({
 .main-player {
   iframe {
     max-width: 100% !important;
+  }
+}
+.filter-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  .filter-buttons {
   }
 }
 </style>

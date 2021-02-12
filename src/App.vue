@@ -34,6 +34,13 @@
             ></v-text-field>
           </v-responsive>
           <v-spacer></v-spacer>
+          <v-switch
+            inset
+            v-model="youtubeStore.state.isShowVideo"
+            hide-details
+            label="動画プレイヤーを表示"
+          ></v-switch>
+          <v-spacer></v-spacer>
           <v-btn v-if="isShowLoginBtn && !isLogin" @click="loginStore.login" outlined>
             ログイン
           </v-btn>
@@ -43,6 +50,7 @@
         </v-app-bar>
 
         <v-main>
+          <common-player />
           <router-view />
         </v-main>
       </v-app>
@@ -56,13 +64,17 @@ import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
 import { isMobile } from "./Util";
+import CommonPlayer from "@/components/CommonPlayer.vue";
 
 export default defineComponent({
+  components: {
+    CommonPlayer,
+  },
   setup() {
     const { loadData } = StoreUtil.useStore("DataStore");
     const dataStore = StoreUtil.useStore("DataStore");
-    const masterStore = StoreUtil.useStore("MasterStore");
     const loginStore = StoreUtil.useStore("LoginStore");
+    const youtubeStore = StoreUtil.useStore("YoutubeStore");
     onMounted(async () => {
       loadYoutubeApi();
       await loginStore.redirectLogin();
@@ -87,7 +99,7 @@ export default defineComponent({
       state,
       changeDrawer,
       router,
-      masterStore,
+      youtubeStore,
     };
   },
 });
