@@ -35,6 +35,7 @@
           </v-responsive>
           <v-spacer></v-spacer>
           <v-switch
+            v-if="isShowPlayerShowSwitch"
             inset
             v-model="youtubeStore.state.isShowVideo"
             hide-details
@@ -60,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from "@vue/composition-api";
+import { defineComponent, onMounted, reactive, computed } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
@@ -103,6 +104,9 @@ export default defineComponent({
       changeDrawer,
       router,
       youtubeStore,
+      isShowPlayerShowSwitch: computed(() => {
+        return !isMobile();
+      }),
     };
   },
 });
