@@ -9,9 +9,9 @@ export class FireBaseUtil {
     const firebaseConfig = {
       apiKey: "AIzaSyDf3aeKF4bsout7UbeUn16jd1JJUE1yJhs",
       authDomain: "v-button.firebaseapp.com",
+      databaseURL: "https://v-button-default-rtdb.firebaseio.com",
       projectId: "v-button",
       storageBucket: "v-button.appspot.com",
-      databaseURL: "https://v-button-default-rtdb.firebaseio.com/",
       messagingSenderId: "747865318145",
       appId: "1:747865318145:web:cfc40f0490b5291c7db100",
       measurementId: "G-H8YMQTM7EL",

@@ -98,7 +98,7 @@ class DataStore implements StoreBase {
       );
       const dataSet = [...state.dataSet, ...dataList];
       dataSet.sort((a, b) => {
-        return (a.updatedDate || 0) - (b.updatedDate || 0);
+        return (b.updatedDate || 0) - (a.updatedDate || 0);
       });
       state.dataSet = dataSet;
     };
