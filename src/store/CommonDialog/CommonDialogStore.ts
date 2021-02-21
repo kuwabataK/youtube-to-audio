@@ -1,8 +1,5 @@
-import { computed, reactive, watch } from "@vue/composition-api";
+import { reactive } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
-import { fireBaseUtil } from "@/main";
-import LoginStore from "../LoginStore/LoginStore";
-import { stringify } from "uuid";
 
 type openArg = {
   title: string;
@@ -23,7 +20,7 @@ class CommonDialogStore implements StoreBase {
       title: "",
       message: "",
       isShowCancel: true,
-      width: 600,
+      width: 600
     });
     /**
      * ダイアログを表示する
@@ -33,9 +30,9 @@ class CommonDialogStore implements StoreBase {
       title,
       message,
       isShowCancel = true,
-      width = 600,
+      width = 600
     }: openArg): Promise<"OK" | "Cancel"> => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         state.resolver = resolve;
         state.isOpen = true;
         state.title = title;
@@ -58,7 +55,7 @@ class CommonDialogStore implements StoreBase {
     return {
       state,
       open,
-      close,
+      close
     };
   }
 }
@@ -67,5 +64,5 @@ const value: ValueType<CommonDialogStore> = {};
 
 export default {
   createStore: new CommonDialogStore().createStore,
-  value,
+  value
 };

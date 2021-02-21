@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <v-dialog :value="state.isOpen" persistent :width="width" max-width="1000px">
+    <v-dialog
+      :value="state.isOpen"
+      persistent
+      :width="width"
+      max-width="1000px"
+    >
       <v-card>
         <v-card-title>
           <span class="headline">{{ state.title }}</span>
@@ -42,8 +47,8 @@ export default defineComponent({
       close,
       width: computed(() => {
         return `${state.width}px`;
-      }),
+      })
     };
-  },
+  }
 });
 </script>

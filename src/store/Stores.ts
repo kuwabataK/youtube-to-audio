@@ -10,7 +10,7 @@ export const StoreIndex = {
   CommonDialogStore,
   YoutubeStore,
   DataStore,
-  LoginStore,
+  LoginStore
 };
 
 export type StoresType = typeof StoreIndex;

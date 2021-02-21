@@ -1,6 +1,8 @@
 <template>
   <v-chip class="ma-2" :color="color" outlined @click="loadVideo">
-    <span class="label-title" :class="{ 'show-edit': showEditButton }">{{ title }}</span>
+    <span class="label-title" :class="{ 'show-edit': showEditButton }">{{
+      title
+    }}</span>
     <v-icon color="blue" right @click.stop="openLink">
       mdi-open-in-new
     </v-icon>
@@ -19,26 +21,26 @@ export default defineComponent({
   props: {
     videoId: {
       type: String,
-      required: true,
+      required: true
     },
     title: {
       type: String,
-      required: true,
+      required: true
     },
     start: Number,
     end: Number,
     color: {
       type: String,
-      default: "primary",
+      default: "primary"
     },
     showEditButton: {
       type: Boolean,
-      default: false,
+      default: false
     },
     volume: {
       type: Number,
-      default: 50,
-    },
+      default: 50
+    }
   },
   setup(props, context) {
     const { yt } = StoreUtil.useStore("YoutubeStore");
@@ -48,7 +50,7 @@ export default defineComponent({
       yt.player?.loadVideoById({
         videoId: props.videoId,
         startSeconds: props.start || 0,
-        endSeconds: props.end || 0,
+        endSeconds: props.end || 0
       });
       yt.player?.unMute();
       yt.player?.setPlaybackQuality("small");
@@ -68,9 +70,9 @@ export default defineComponent({
       yt,
       loadVideo,
       openLink,
-      openEdit,
+      openEdit
     };
-  },
+  }
 });
 </script>
 

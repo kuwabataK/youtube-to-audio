@@ -10,7 +10,9 @@
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
-              <v-list-item-content @click="() => router.push('/shuba-memory-game')">
+              <v-list-item-content
+                @click="() => router.push('/shuba-memory-game')"
+              >
                 <v-list-item-title>神経衰弱</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -24,7 +26,9 @@
 
         <v-app-bar app>
           <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
-          <v-toolbar-title>V Button - Vtuber音声ボタン作成サイト</v-toolbar-title>
+          <v-toolbar-title
+            >V Button - Vtuber音声ボタン作成サイト</v-toolbar-title
+          >
           <v-spacer></v-spacer>
           <v-responsive max-width="260">
             <v-text-field
@@ -47,10 +51,18 @@
             label="動画プレイヤーを表示"
           ></v-switch>
           <v-spacer></v-spacer>
-          <v-btn v-if="isShowLoginBtn && !isLogin" @click="loginStore.login" outlined>
+          <v-btn
+            v-if="isShowLoginBtn && !isLogin"
+            @click="loginStore.login"
+            outlined
+          >
             ログイン
           </v-btn>
-          <v-btn v-if="isShowLoginBtn && isLogin" @click="loginStore.logout" outlined>
+          <v-btn
+            v-if="isShowLoginBtn && isLogin"
+            @click="loginStore.logout"
+            outlined
+          >
             ログアウト
           </v-btn>
         </v-app-bar>
@@ -66,7 +78,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, computed } from "@vue/composition-api";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  computed
+} from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
@@ -77,7 +94,7 @@ import CommonModal from "@/components/CommonModal.vue";
 export default defineComponent({
   components: {
     CommonPlayer,
-    CommonModal,
+    CommonModal
   },
   setup() {
     const { loadData } = StoreUtil.useStore("DataStore");
@@ -91,7 +108,7 @@ export default defineComponent({
       loadData();
     });
     const state = reactive({
-      drawer: false,
+      drawer: false
     });
     const changeDrawer = () => {
       state.drawer = !state.drawer;
@@ -111,9 +128,9 @@ export default defineComponent({
       youtubeStore,
       isShowPlayerShowSwitch: computed(() => {
         return !isMobile();
-      }),
+      })
     };
-  },
+  }
 });
 </script>
 

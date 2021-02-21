@@ -7,8 +7,8 @@
     />
     <v-container>
       <v-col>
-        VTuberのyoutube動画を読み込んで、指定箇所の音声を再生できるボタンを作成 /
-        共有できるサイトです。
+        VTuberのyoutube動画を読み込んで、指定箇所の音声を再生できるボタンを作成
+        / 共有できるサイトです。
       </v-col>
       <v-col cols="12">
         <v-btn
@@ -64,7 +64,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, computed, onMounted } from "@vue/composition-api";
+import { defineComponent, reactive, computed } from "@vue/composition-api";
 import CreateVoiceModal from "@/components/CreateVoiceModal.vue";
 import LinkLabel from "@/components/LinkLabel.vue";
 import StoreUtil from "@/store/StoreUtil";
@@ -74,20 +74,20 @@ export default defineComponent({
   name: "CreateVoicePage",
   components: {
     CreateVoiceModal,
-    LinkLabel,
+    LinkLabel
   },
   setup() {
     const { dataSet, filteredDataSet } = StoreUtil.useStore("DataStore");
     const state = reactive({
       isOpenCreateModal: false,
-      editDataId: null as string | null,
+      editDataId: null as string | null
     });
     const openEdit = (id: string) => {
       state.editDataId = id;
       state.isOpenCreateModal = true;
     };
     const editedData = computed(() => {
-      return dataSet.value.find((d) => d.id === state.editDataId);
+      return dataSet.value.find(d => d.id === state.editDataId);
     });
     const dataStore = StoreUtil.useStore("DataStore");
     const { yt } = StoreUtil.useStore("YoutubeStore");
@@ -110,9 +110,9 @@ export default defineComponent({
       state,
       dataSet,
       openEdit,
-      editedData,
+      editedData
     };
-  },
+  }
 });
 </script>
 

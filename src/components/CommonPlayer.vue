@@ -20,20 +20,24 @@ const firstVideoSourceId = "mZ0sJQC8qkE";
 export default defineComponent({
   name: "CommonPlayer",
   components: {
-    CreateVoiceModal,
+    CreateVoiceModal
   },
   setup() {
-    const { state: youtubeStoreState, yt, id: playerDivId } = StoreUtil.useStore("YoutubeStore");
+    const {
+      state: youtubeStoreState,
+      yt,
+      id: playerDivId
+    } = StoreUtil.useStore("YoutubeStore");
     onMounted(async () => {
       // ロード完了から1秒待ってplayerを準備する
-      await sleep(1000);
+      await sleep(1000).awaiter;
       yt.loadVideo(firstVideoSourceId);
     });
     return {
       playerDivId,
-      youtubeStoreState,
+      youtubeStoreState
     };
-  },
+  }
 });
 </script>
 

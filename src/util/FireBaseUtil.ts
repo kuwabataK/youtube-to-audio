@@ -14,7 +14,7 @@ export class FireBaseUtil {
       storageBucket: "v-button.appspot.com",
       messagingSenderId: "747865318145",
       appId: "1:747865318145:web:cfc40f0490b5291c7db100",
-      measurementId: "G-H8YMQTM7EL",
+      measurementId: "G-H8YMQTM7EL"
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);

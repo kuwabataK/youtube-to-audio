@@ -11,7 +11,7 @@ import { fireBaseUtil } from "@/main";
 class LoginStore implements StoreBase {
   createStore() {
     const state = reactive({
-      user: null as null | firebase.User,
+      user: null as null | firebase.User
     });
 
     const isLogin = computed(() => {
@@ -26,23 +26,21 @@ class LoginStore implements StoreBase {
         .auth()
         .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() => {
-          return firebase.auth().signInWithRedirect(fireBaseUtil.googleAuthProvider);
+          return firebase
+            .auth()
+            .signInWithRedirect(fireBaseUtil.googleAuthProvider);
         });
     };
     const redirectLogin = async () => {
       return firebase
         .auth()
         .getRedirectResult()
-        .then((result) => {
+        .then(result => {
           console.log("ログイン成功！！！");
-          if (result.credential) {
-            const credential = result.credential as firebase.auth.OAuthCredential;
-            // ...
-          }
           // The signed-in user info.
           state.user = result.user;
         })
-        .catch((error) => {
+        .catch(error => {
           console.error(error);
           // // Handle Errors here.
           // var errorCode = error.code;
@@ -59,9 +57,6 @@ class LoginStore implements StoreBase {
         .signOut()
         .then(() => {
           window.location.reload();
-        })
-        .catch((error) => {
-          // An error happened.
         });
     };
     return {
@@ -70,7 +65,7 @@ class LoginStore implements StoreBase {
       logout,
       redirectLogin,
       loadLoginedData,
-      isLogin,
+      isLogin
     };
   }
 }
@@ -79,5 +74,5 @@ const value: ValueType<LoginStore> = {};
 
 export default {
   createStore: new LoginStore().createStore,
-  value,
+  value
 };

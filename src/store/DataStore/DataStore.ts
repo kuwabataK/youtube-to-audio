@@ -29,7 +29,7 @@ class DataStore implements StoreBase {
     const state = reactive({
       dataSet: [] as AudioData[],
       showOnlyUserData: false,
-      searchText: "",
+      searchText: ""
     });
     const searchTexts = computed(() => {
       return state.searchText.split(/[\u{20}\u{3000}]/u);
@@ -47,9 +47,9 @@ class DataStore implements StoreBase {
               return {
                 ...d,
                 isLocalData: true,
-                isOwnData: true,
+                isOwnData: true
               };
-            }),
+            })
           ];
         }
       } catch (_) {
@@ -58,7 +58,7 @@ class DataStore implements StoreBase {
     };
     const saveLocalData = () => {
       try {
-        const dataSet = state.dataSet.filter((d) => d.isLocalData);
+        const dataSet = state.dataSet.filter(d => d.isLocalData);
         if (dataSet) {
           localStorage.setItem("_DATA_SET_", JSON.stringify(dataSet));
         }
@@ -76,26 +76,29 @@ class DataStore implements StoreBase {
       let privateData: Record<string, AudioData> = {};
       const userId = LoginStore.value.state?.user?.uid;
       if (userId) {
-        const privateDataRef = fireBaseUtil.database.ref(`privateDataSet/${userId}/`);
+        const privateDataRef = fireBaseUtil.database.ref(
+          `privateDataSet/${userId}/`
+        );
         const [_data, _privateData] = await Promise.all([
           dataRef.once("value"),
-          privateDataRef.once("value"),
+          privateDataRef.once("value")
         ]);
         data = _data.val();
         privateData = _privateData.val();
       } else {
         data = await (await dataRef.once("value")).val();
       }
-      const dataList = [...Object.values(data || {}), ...Object.values(privateData || {})].map(
-        (d) => {
-          return {
-            ...d,
-            get isOwnData() {
-              return d.createBy === LoginStore.value.state?.user?.uid;
-            },
-          };
-        }
-      );
+      const dataList = [
+        ...Object.values(data || {}),
+        ...Object.values(privateData || {})
+      ].map(d => {
+        return {
+          ...d,
+          get isOwnData() {
+            return d.createBy === LoginStore.value.state?.user?.uid;
+          }
+        };
+      });
       const dataSet = [...state.dataSet, ...dataList];
       dataSet.sort((a, b) => {
         return (b.updatedDate || 0) - (a.updatedDate || 0);
@@ -106,7 +109,7 @@ class DataStore implements StoreBase {
      * 自身のデータ
      */
     const dataSetOnlyUser = computed(() => {
-      return state.dataSet.filter((d) => d.isOwnData);
+      return state.dataSet.filter(d => d.isOwnData);
     });
     /**
      * 画面で表示するデータ
@@ -119,11 +122,11 @@ class DataStore implements StoreBase {
      * 検索後のデータ
      */
     const filteredDataSet = computed(() => {
-      return dataSet.value.filter((d) => {
+      return dataSet.value.filter(d => {
         if (searchTexts.value.length === 0) return true;
-        return searchTexts.value.every((t) => {
+        return searchTexts.value.every(t => {
           if (d.title.indexOf(t) !== -1) return true;
-          if (d.tag.some((tag) => tag.indexOf(t) !== -1)) return true;
+          if (d.tag.some(tag => tag.indexOf(t) !== -1)) return true;
           return false;
         });
       });
@@ -141,8 +144,10 @@ class DataStore implements StoreBase {
 
       // publicとprivateで同じデータが存在しないようにするための制御を行う
       const updates: Record<string, AudioData | null> = {};
-      updates[`privateDataSet/${userId}/` + data.id] = data.access === "private" ? postData : null;
-      updates["dataSet/" + data.id] = data.access === "private" ? null : postData;
+      updates[`privateDataSet/${userId}/` + data.id] =
+        data.access === "private" ? postData : null;
+      updates["dataSet/" + data.id] =
+        data.access === "private" ? null : postData;
       return fireBaseUtil.database.ref().update(updates);
     };
     /**
@@ -162,7 +167,7 @@ class DataStore implements StoreBase {
      * @param editedData
      */
     const editData = (editedData: AudioData) => {
-      const removedDataSet = state.dataSet.filter((d) => d.id !== editedData.id);
+      const removedDataSet = state.dataSet.filter(d => d.id !== editedData.id);
       state.dataSet = [...removedDataSet, editedData];
       saveLocalData();
       if (!LoginStore.value.isLogin?.value) {
@@ -171,7 +176,7 @@ class DataStore implements StoreBase {
       return changeFireBaseData(editedData);
     };
     const deleteData = (id: string) => {
-      state.dataSet = state.dataSet.filter((d) => d.id !== id);
+      state.dataSet = state.dataSet.filter(d => d.id !== id);
       saveLocalData();
       if (!LoginStore.value.isLogin?.value) {
         return Promise.resolve();
@@ -191,7 +196,7 @@ class DataStore implements StoreBase {
       loadData,
       addData,
       editData,
-      deleteData,
+      deleteData
     };
   }
 }
@@ -200,5 +205,5 @@ const value: ValueType<DataStore> = {};
 
 export default {
   createStore: new DataStore().createStore,
-  value,
+  value
 };
