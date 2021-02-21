@@ -37,7 +37,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .main-player {
   iframe {
     max-width: 100% !important;

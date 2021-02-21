@@ -116,7 +116,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .main-player {
   iframe {
     max-width: 100% !important;
@@ -127,7 +127,5 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   width: 100%;
-  .filter-buttons {
-  }
 }
 </style>

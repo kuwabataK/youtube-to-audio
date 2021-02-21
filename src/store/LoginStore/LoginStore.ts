@@ -4,17 +4,6 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import { fireBaseUtil } from "@/main";
 
-export type AudioData = {
-  id: string;
-  title: string;
-  tag: string[];
-  color?: string;
-  start: number;
-  end: number;
-  videoId: string;
-  isOwnData?: boolean;
-};
-
 /**
  * 表示するタグを管理するためのStore
  */

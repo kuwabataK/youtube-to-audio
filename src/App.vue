@@ -10,6 +10,11 @@
               </v-list-item-content>
             </v-list-item>
             <v-list-item link>
+              <v-list-item-content @click="() => router.push('/shuba-memory-game')">
+                <v-list-item-title>神経衰弱</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
               <v-list-item-content @click="() => router.push('/about')">
                 <v-list-item-title>About</v-list-item-title>
               </v-list-item-content>
