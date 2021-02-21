@@ -1,5 +1,10 @@
 <template>
-  <div class="memory-panel" :style="style" @click="loadVideo"></div>
+  <div
+    class="memory-panel"
+    :class="{ selected: props.isSelected, hidden: props.isHidden }"
+    :style="style"
+    @click="onClick"
+  ></div>
 </template>
 <script lang="ts">
 import { defineComponent, computed } from "@vue/composition-api";
@@ -14,8 +19,16 @@ export default defineComponent({
       type: Object as () => AudioData,
       required: true,
     },
+    isSelected: {
+      type: Boolean,
+      default: false,
+    },
+    isHidden: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props) {
+  setup(props, context) {
     const { yt } = StoreUtil.useStore("YoutubeStore");
     yt.isLoop = false;
 
@@ -30,16 +43,21 @@ export default defineComponent({
       yt.volume = props.audioData.volume ?? 50;
       yt.player?.playVideo();
     };
+    const onClick = () => {
+      loadVideo();
+      context.emit("click", props.audioData);
+    };
     const color = computed(() => {
       return props.audioData.color ?? "pink";
     });
     return {
+      props,
       get style() {
         return {
           backgroundColor: color.value,
         };
       },
-      loadVideo,
+      onClick,
     };
   },
 });
@@ -49,5 +67,11 @@ export default defineComponent({
 .memory-panel {
   width: 50px;
   height: 50px;
+  &.selected {
+    border: 2px solid gray;
+  }
+  &.hidden {
+    visibility: hidden;
+  }
 }
 </style>

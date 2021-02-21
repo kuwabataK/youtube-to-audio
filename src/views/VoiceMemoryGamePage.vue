@@ -1,6 +1,14 @@
 <template>
   <div class="game-container">
-    <memory-game-panel class="item" v-for="item in dataList" :key="item.id" :audioData="item" />
+    <memory-game-panel
+      class="item"
+      v-for="(item, i) in dataList"
+      :key="item.id + i"
+      :isSelected="state.selectIndex === i"
+      :isHidden="isHidden(i)"
+      :audioData="item"
+      @click="selectItem(i)"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -17,7 +25,8 @@ export default defineComponent({
   setup() {
     const state = reactive({
       itemNum: 8,
-      selectId: null,
+      selectIndex: null as null | number,
+      hiddenDataIndexs: [] as number[],
     });
 
     const dataStore = StoreUtil.useStore("DataStore");
@@ -31,8 +40,27 @@ export default defineComponent({
       const randam = shuffle(subaruList.value).slice(0, state.itemNum);
       return shuffle([...randam, ...randam]);
     });
+
+    const isHidden = (index: number) => {
+      return state.hiddenDataIndexs.includes(index);
+    };
+
     return {
+      state,
       dataList,
+      isHidden,
+      selectItem(index: number) {
+        if (index === state.selectIndex) return;
+        if (state.selectIndex == null) {
+          state.selectIndex = index;
+        } else {
+          if (dataList.value[state.selectIndex].id === dataList.value[index].id) {
+            state.hiddenDataIndexs.push(index);
+            state.hiddenDataIndexs.push(state.selectIndex);
+          }
+          state.selectIndex = null;
+        }
+      },
     };
   },
 });
