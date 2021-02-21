@@ -68,10 +68,11 @@ export default defineComponent({
   width: 50px;
   height: 50px;
   &.selected {
-    border: 2px solid gray;
+    border: 4px solid gray;
   }
   &.hidden {
     visibility: hidden;
+    pointer-events: none;
   }
 }
 </style>
