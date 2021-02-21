@@ -1,4 +1,4 @@
-import { computed, reactive, watch } from "@vue/composition-api";
+import { computed, reactive } from "@vue/composition-api";
 import { StoreBase, ValueType } from "../StoreBase";
 import { fireBaseUtil } from "@/main";
 import LoginStore from "../LoginStore/LoginStore";
@@ -150,7 +150,7 @@ class DataStore implements StoreBase {
      * @param newData
      */
     const addData = (newData: AudioData) => {
-      state.dataSet.push(newData);
+      state.dataSet.unshift(newData);
       saveLocalData();
       if (!LoginStore.value.isLogin?.value) {
         return Promise.resolve();
