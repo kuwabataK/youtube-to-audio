@@ -34,14 +34,7 @@
 </template>
 <script lang="ts">
 import AsyncLock from "async-lock";
-import {
-  defineComponent,
-  computed,
-  reactive,
-  onMounted,
-  onBeforeMount,
-  watch,
-} from "@vue/composition-api";
+import { defineComponent, computed, reactive, onMounted, watch } from "@vue/composition-api";
 import StoreUtil from "@/store/StoreUtil";
 import MemoryGamePanel from "@/components/memory-game/MemoryGamePanel.vue";
 import { shuffle, sleep } from "@/Util";
