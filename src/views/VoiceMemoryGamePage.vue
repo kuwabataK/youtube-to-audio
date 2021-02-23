@@ -34,7 +34,13 @@
 </template>
 <script lang="ts">
 import AsyncLock from "async-lock";
-import { defineComponent, computed, reactive, onMounted, watch } from "@vue/composition-api";
+import {
+  defineComponent,
+  computed,
+  reactive,
+  onMounted,
+  watch
+} from "@vue/composition-api";
 import StoreUtil from "@/store/StoreUtil";
 import MemoryGamePanel from "@/components/memory-game/MemoryGamePanel.vue";
 import { shuffle, sleep } from "@/Util";
@@ -44,13 +50,13 @@ const asyncLock = new AsyncLock();
 
 const diffList = {
   アンリミデット: null,
-  ノーマル: 8,
+  ノーマル: 8
 };
 
 export default defineComponent({
   name: "VoiceMemoryPage",
   components: {
-    MemoryGamePanel,
+    MemoryGamePanel
   },
   setup() {
     const dataStore = StoreUtil.useStore("DataStore");
@@ -61,14 +67,14 @@ export default defineComponent({
       selectIndex: null as null | number,
       hiddenDataIndexs: [] as number[],
       secondSelectIndex: null as null | number,
-      cancelBtnWait: null as null | (() => void),
+      cancelBtnWait: null as null | (() => void)
     });
 
     /**
      * スバルのボイスのみを抽出したリスト
      */
     const subaruList = computed(() => {
-      return dataStore.state.dataSet.filter((data) => {
+      return dataStore.state.dataSet.filter(data => {
         return data.tag.includes("大空スバル");
       });
     });
@@ -116,7 +122,7 @@ export default defineComponent({
           if (val === state.itemNum) return key;
           return null;
         })
-        .filter((k) => k)[0];
+        .filter(k => k)[0];
     });
 
     /**
@@ -148,7 +154,7 @@ export default defineComponent({
       itemStyle: computed(() => {
         return {
           width: itemWidth.value,
-          height: itemWidth.value,
+          height: itemWidth.value
         };
       }),
       /**
@@ -168,7 +174,9 @@ export default defineComponent({
             const { awaiter, cancel } = sleep(2000);
             state.cancelBtnWait = cancel;
             await awaiter;
-            if (state.dataList[state.selectIndex].id === state.dataList[index].id) {
+            if (
+              state.dataList[state.selectIndex].id === state.dataList[index].id
+            ) {
               state.hiddenDataIndexs.push(index);
               state.hiddenDataIndexs.push(state.selectIndex);
             }
@@ -177,9 +185,9 @@ export default defineComponent({
           }
         });
       },
-      reload,
+      reload
     };
-  },
+  }
 });
 </script>
 
