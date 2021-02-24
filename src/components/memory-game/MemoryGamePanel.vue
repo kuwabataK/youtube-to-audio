@@ -7,17 +7,13 @@
     @click="onClick"
   >
     <transition name="slide">
-      <div
-        v-if="!props.isSelected && !isMouseOver"
-        :style="style"
-        class="normal"
-      ></div>
+      <div v-if="!props.isSelected && !isMouseOver" :style="style" class="normal"></div>
     </transition>
     <img src="@/assets/image/icon/oozora_subaru.jpg" class="image" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, computed, reactive } from "@vue/composition-api";
+import { defineComponent, computed } from "@vue/composition-api";
 import { AudioData } from "@/store/DataStore/DataStore";
 import StoreUtil from "@/store/StoreUtil";
 import useMouseOver from "@/Hooks/useMouseOver";
@@ -28,16 +24,16 @@ export default defineComponent({
   props: {
     audioData: {
       type: Object as () => AudioData,
-      required: true
+      required: true,
     },
     isSelected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isHidden: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup(props, context) {
     const { yt } = StoreUtil.useStore("YoutubeStore");
@@ -49,7 +45,7 @@ export default defineComponent({
       yt.player?.loadVideoById({
         videoId: props.audioData.videoId,
         startSeconds: props.audioData.start || 0,
-        endSeconds: props.audioData.end || 0
+        endSeconds: props.audioData.end || 0,
       });
       yt.player?.unMute();
       yt.player?.setPlaybackQuality("small");
@@ -67,15 +63,15 @@ export default defineComponent({
       props,
       get style() {
         return {
-          backgroundColor: color.value
+          backgroundColor: color.value,
         };
       },
       onClick,
       isMouseOver,
       onMouseOver,
-      onMouseLeave
+      onMouseLeave,
     };
-  }
+  },
 });
 </script>
 
