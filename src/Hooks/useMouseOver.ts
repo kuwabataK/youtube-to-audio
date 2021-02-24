@@ -3,10 +3,9 @@ import { stat } from "fs";
 
 export default function useMouseOver() {
   const state = reactive({
-    isMouseOver: false
+    isMouseOver: false,
   });
   const onMouseOver = () => {
-    console.log("マウスが上に乗ったよ");
     state.isMouseOver = true;
   };
   const onMouseLeave = () => {
@@ -17,6 +16,6 @@ export default function useMouseOver() {
       return state.isMouseOver;
     }),
     onMouseOver,
-    onMouseLeave
+    onMouseLeave,
   };
 }
