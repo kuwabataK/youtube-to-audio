@@ -7,7 +7,11 @@
     @click="onClick"
   >
     <transition name="slide">
-      <div v-if="!props.isSelected && !isMouseOver" :style="style" class="normal"></div>
+      <div
+        v-if="!props.isSelected && !isMouseOver"
+        :style="style"
+        class="normal"
+      ></div>
     </transition>
     <img src="@/assets/image/icon/oozora_subaru.jpg" class="image" />
   </div>
@@ -24,16 +28,16 @@ export default defineComponent({
   props: {
     audioData: {
       type: Object as () => AudioData,
-      required: true,
+      required: true
     },
     isSelected: {
       type: Boolean,
-      default: false,
+      default: false
     },
     isHidden: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   setup(props, context) {
     const { yt } = StoreUtil.useStore("YoutubeStore");
@@ -45,7 +49,7 @@ export default defineComponent({
       yt.player?.loadVideoById({
         videoId: props.audioData.videoId,
         startSeconds: props.audioData.start || 0,
-        endSeconds: props.audioData.end || 0,
+        endSeconds: props.audioData.end || 0
       });
       yt.player?.unMute();
       yt.player?.setPlaybackQuality("small");
@@ -63,15 +67,15 @@ export default defineComponent({
       props,
       get style() {
         return {
-          backgroundColor: color.value,
+          backgroundColor: color.value
         };
       },
       onClick,
       isMouseOver,
       onMouseOver,
-      onMouseLeave,
+      onMouseLeave
     };
-  },
+  }
 });
 </script>
 

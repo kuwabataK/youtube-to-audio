@@ -2,7 +2,7 @@
   <div id="app">
     <div id="nav">
       <v-app>
-        <v-navigation-drawer v-model="state.drawer" app>
+        <v-navigation-drawer v-model="isOpenSideBar" app>
           <v-list>
             <v-list-item link>
               <v-list-item-content @click="() => router.push('/')">
@@ -23,50 +23,7 @@
             </v-list-item>
           </v-list>
         </v-navigation-drawer>
-
-        <v-app-bar app>
-          <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
-          <v-toolbar-title
-            >V Button - Vtuber音声ボタン作成サイト</v-toolbar-title
-          >
-          <v-spacer></v-spacer>
-          <v-responsive max-width="260">
-            <v-text-field
-              v-model="dataStore.state.searchText"
-              dense
-              outlined
-              flat
-              hide-details
-              rounded
-              solo-inverted
-              prepend-inner-icon="mdi-magnify"
-            ></v-text-field>
-          </v-responsive>
-          <v-spacer></v-spacer>
-          <v-switch
-            v-if="isShowPlayerShowSwitch"
-            inset
-            v-model="youtubeStore.state.isShowVideo"
-            hide-details
-            label="動画プレイヤーを表示"
-          ></v-switch>
-          <v-spacer></v-spacer>
-          <v-btn
-            v-if="isShowLoginBtn && !isLogin"
-            @click="loginStore.login"
-            outlined
-          >
-            ログイン
-          </v-btn>
-          <v-btn
-            v-if="isShowLoginBtn && isLogin"
-            @click="loginStore.logout"
-            outlined
-          >
-            ログアウト
-          </v-btn>
-        </v-app-bar>
-
+        <Header />
         <v-main>
           <common-player />
           <router-view />
@@ -78,57 +35,48 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  computed
-} from "@vue/composition-api";
+import { defineComponent, onMounted, computed } from "@vue/composition-api";
 import { loadYoutubeApi } from "./Hooks/useYoutube";
 import StoreUtil from "./store/StoreUtil";
 import router from "@/router/index";
-import { isMobile } from "./Util";
 import CommonPlayer from "@/components/CommonPlayer.vue";
 import CommonModal from "@/components/CommonModal.vue";
+import Header from "@/components/header/Header.vue";
 
 export default defineComponent({
   components: {
     CommonPlayer,
-    CommonModal
+    CommonModal,
+    Header
   },
   setup() {
     const { loadData } = StoreUtil.useStore("DataStore");
-    const dataStore = StoreUtil.useStore("DataStore");
     const loginStore = StoreUtil.useStore("LoginStore");
-    const youtubeStore = StoreUtil.useStore("YoutubeStore");
+    const CommonStore = StoreUtil.useStore("CommonStore");
     onMounted(async () => {
       loadYoutubeApi();
       await loginStore.redirectLogin();
       loginStore.loadLoginedData();
       loadData();
     });
-    const state = reactive({
-      drawer: false
-    });
     const changeDrawer = () => {
-      state.drawer = !state.drawer;
+      CommonStore.changeOpenSideBar(!CommonStore.isOpenSideBar.value);
     };
+
+    const isOpenSideBar = computed({
+      get() {
+        return CommonStore.isOpenSideBar.value;
+      },
+      set(value: boolean) {
+        CommonStore.changeOpenSideBar(value);
+      }
+    });
+
     return {
       loginStore,
-      get isLogin() {
-        return loginStore.isLogin;
-      },
-      get isShowLoginBtn() {
-        return !isMobile();
-      },
-      dataStore,
-      state,
+      isOpenSideBar,
       changeDrawer,
-      router,
-      youtubeStore,
-      isShowPlayerShowSwitch: computed(() => {
-        return !isMobile();
-      })
+      router
     };
   }
 });
