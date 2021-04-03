@@ -7,6 +7,9 @@ import { defineComponent } from "@vue/composition-api";
 
 export default defineComponent({
   name: "Setting",
+  metaInfo: {
+    title: "Setting"
+  },
   setup() {
     return {};
   }

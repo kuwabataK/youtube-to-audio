@@ -1,10 +1,21 @@
+/**
+ * キャンセル可能なsleepメソッド
+ * @param msec Sleepする時間（msec）
+ */
 export function sleep(msec: number) {
   let clearTimeoutId = null as null | NodeJS.Timeout;
   let resolver = null as null | ((arg?: unknown) => void);
+  /**
+   * await awaiter() を実行することで一定時間実行を停止する
+   */
   const awaiter = new Promise(resolve => {
     clearTimeoutId = setTimeout(resolve, msec);
     resolver = resolve;
   });
+  /**
+   * このSleep関数の実行をキャンセルする
+   * @returns
+   */
   const cancel = () => {
     if (!clearTimeoutId || !resolver) return;
     clearTimeout(clearTimeoutId);

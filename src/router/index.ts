@@ -1,34 +1,19 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import CreateVoicePage from "@/views/CreateVoicePage.vue";
-import VoiceMemoryGamePage from "@/views/VoiceMemoryGamePage.vue";
+import Const from "@/util/Const";
+import CommonStore from "@/store/Common/CommonStore";
 
 Vue.use(VueRouter);
 
-const routes: Array<RouteConfig> = [
-  {
-    path: "/",
-    name: "V Button - Vtuber音声ボタン作成サイト",
-    component: CreateVoicePage
-  },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  },
-  {
-    path: "/shuba-memory-game",
-    name: "Memory Game",
-    component: VoiceMemoryGamePage
-  }
-];
+const routes: Array<RouteConfig> = Object.values(Const.pageNames);
 
 const router = new VueRouter({
   routes
+});
+
+router.afterEach(to => {
+  if (!CommonStore.value.state) return;
+  CommonStore.value.state.currentPath = to.path;
 });
 
 export default router;

@@ -76,6 +76,9 @@ export default defineComponent({
     CreateVoiceModal,
     LinkLabel
   },
+  metaInfo: {
+    title: "VtuberButton"
+  },
   setup() {
     const { dataSet, filteredDataSet } = StoreUtil.useStore("DataStore");
     const state = reactive({

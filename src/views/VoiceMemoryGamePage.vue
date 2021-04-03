@@ -30,6 +30,12 @@
         @click="selectItem(i)"
       />
     </div>
+    <FinishDialog
+      :isShow="state.isShowFinishDialog"
+      :totalCardNumber="state.dataList.length"
+      :totalClickNumber="state.totalClickNumber"
+      @clickOk="state.isShowFinishDialog = false"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -43,6 +49,7 @@ import {
 } from "@vue/composition-api";
 import StoreUtil from "@/store/StoreUtil";
 import MemoryGamePanel from "@/components/memory-game/MemoryGamePanel.vue";
+import FinishDialog from "@/components/memory-game/FinishDialog.vue";
 import { shuffle, sleep } from "@/Util";
 import { AudioData } from "@/store/DataStore/DataStore";
 
@@ -56,18 +63,39 @@ const diffList = {
 export default defineComponent({
   name: "VoiceMemoryPage",
   components: {
-    MemoryGamePanel
+    MemoryGamePanel,
+    FinishDialog
+  },
+  metaInfo: {
+    title: "スバルボタン神経衰弱"
   },
   setup() {
     const dataStore = StoreUtil.useStore("DataStore");
 
     const state = reactive({
+      /**
+       * 表示するボタンのリスト
+       */
       dataList: [] as AudioData[],
+      /**
+       * 表示するボタンの数 / 2
+       */
       itemNum: 8 as null | number,
+      /**
+       * 選択中のボタンのindex
+       */
       selectIndex: null as null | number,
+      /**
+       * 非表示にするボタンのindex
+       */
       hiddenDataIndexs: [] as number[],
       secondSelectIndex: null as null | number,
-      cancelBtnWait: null as null | (() => void)
+      cancelBtnWait: null as null | (() => void),
+      isShowFinishDialog: false,
+      /**
+       * クリック回数
+       */
+      totalClickNumber: 0
     });
 
     /**
@@ -95,6 +123,7 @@ export default defineComponent({
       state.hiddenDataIndexs = [];
       state.secondSelectIndex = null;
       state.cancelBtnWait = null;
+      state.totalClickNumber = 0;
       createDataList();
     };
 
@@ -144,6 +173,16 @@ export default defineComponent({
       return state.selectIndex === index || state.secondSelectIndex === index;
     };
 
+    watch(
+      () => state.hiddenDataIndexs,
+      () => {
+        if (state.dataList.length === 0) return;
+        if (state.hiddenDataIndexs.length === state.dataList.length) {
+          state.isShowFinishDialog = true;
+        }
+      }
+    );
+
     return {
       state,
       isHidden,
@@ -162,6 +201,7 @@ export default defineComponent({
        */
       async selectItem(index: number) {
         if (index === state.selectIndex) return;
+        state.totalClickNumber += 1;
         if (state.cancelBtnWait) {
           state.cancelBtnWait();
           state.cancelBtnWait = null;
@@ -171,6 +211,7 @@ export default defineComponent({
             state.selectIndex = index;
           } else {
             state.secondSelectIndex = index;
+            // 2秒待ってからあっているかどうかの判定を行う
             const { awaiter, cancel } = sleep(2000);
             state.cancelBtnWait = cancel;
             await awaiter;

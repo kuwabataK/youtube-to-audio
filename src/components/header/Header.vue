@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app>
     <v-app-bar-nav-icon @click="changeDrawer"></v-app-bar-nav-icon>
-    <v-toolbar-title>V Button - Vtuber音声ボタン作成サイト</v-toolbar-title>
+    <v-toolbar-title>{{ title }}</v-toolbar-title>
     <v-spacer></v-spacer>
     <v-responsive max-width="260">
       <v-text-field
@@ -39,6 +39,7 @@ import StoreUtil from "@/store/StoreUtil";
 import { isMobile } from "@/Util";
 import CommonPlayer from "@/components/CommonPlayer.vue";
 import CommonModal from "@/components/CommonModal.vue";
+import Const from "@/util/Const";
 
 export default defineComponent({
   components: {
@@ -53,7 +54,16 @@ export default defineComponent({
     const changeDrawer = () => {
       commonStore.changeOpenSideBar(!commonStore.isOpenSideBar.value);
     };
+
+    const title = computed(() => {
+      const currentPath = commonStore.state.currentPath;
+      return Object.values(Const.pageNames).find(
+        page => page.path === currentPath
+      )?.name;
+    });
+
     return {
+      title,
       loginStore,
       get isLogin() {
         return loginStore.isLogin;

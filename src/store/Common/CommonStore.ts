@@ -8,7 +8,8 @@ import { StoreBase, ValueType } from "../StoreBase";
 class CommonDialogStore implements StoreBase {
   createStore() {
     const state = reactive({
-      isOpenSideBar: false
+      isOpenSideBar: false,
+      currentPath: "/"
     });
 
     /**
@@ -23,6 +24,7 @@ class CommonDialogStore implements StoreBase {
     };
 
     return {
+      state,
       isOpenSideBar,
       changeOpenSideBar
     };
